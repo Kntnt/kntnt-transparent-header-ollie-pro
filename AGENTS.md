@@ -1,4 +1,4 @@
-# kntnt-transparent-header-ollie-pro – agent guide
+# kntnt-transparent-header-ollie – agent guide
 
 ## Ground rules (authoritative)
 

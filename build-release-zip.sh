@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Builds a clean kntnt-transparent-header-ollie-pro.zip containing only runtime
+# Builds a clean kntnt-transparent-header-ollie.zip containing only runtime
 # files.
 #
 # The plugin has no runtime dependency, so there is nothing to install into the
@@ -29,8 +29,8 @@ readonly EXIT_USAGE=1
 readonly EXIT_MISSING_TOOL=2
 readonly EXIT_FAILURE=3
 
-REPO="Kntnt/kntnt-transparent-header-ollie-pro"
-PLUGIN_DIR="kntnt-transparent-header-ollie-pro"
+REPO="Kntnt/kntnt-transparent-header-ollie"
+PLUGIN_DIR="kntnt-transparent-header-ollie"
 ZIP_NAME="${PLUGIN_DIR}.zip"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -42,7 +42,7 @@ KEEP=(
 	classes
 	css
 	js
-	kntnt-transparent-header-ollie-pro.php
+	kntnt-transparent-header-ollie.php
 	languages
 	LICENSE
 	README.md
@@ -70,10 +70,10 @@ Source:
 
 Destination (defaults to dist/ in the repo root when none is given):
   --output <path>      Save the zip to <path>. A directory (or trailing /) saves
-                       kntnt-transparent-header-ollie-pro.zip inside it;
+                       kntnt-transparent-header-ollie.zip inside it;
                        otherwise the last path component is the filename. The
                        parent must exist. Omit to write
-                       ./dist/kntnt-transparent-header-ollie-pro.zip.
+                       ./dist/kntnt-transparent-header-ollie.zip.
   --update             Upload the zip to an existing GitHub release for <tag>,
                        replacing any existing zip asset. Requires --tag.
   --create             Create a new GitHub release for <tag> and upload the zip.

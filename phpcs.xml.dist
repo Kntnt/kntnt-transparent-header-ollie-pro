@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<ruleset name="kntnt-transparent-header-ollie-pro">
+<ruleset name="kntnt-transparent-header-ollie">
 
 	<description>WordPress Coding Standards with the deliberate deviations documented in agents.d/coding-standard/wordpress.md.</description>
 
 	<!-- The production PHP: the namespace classes plus the two root files. -->
 	<file>classes/</file>
-	<file>kntnt-transparent-header-ollie-pro.php</file>
+	<file>kntnt-transparent-header-ollie.php</file>
 	<file>autoloader.php</file>
 
 	<!-- Only PHP files. -->
@@ -37,7 +37,7 @@
 
 		<!--
 			Deliberate deviation 3: namespaces over global function prefixes.
-			PHP code lives inside \Kntnt\Transparent_Header_Ollie_Pro rather than
+			PHP code lives inside \Kntnt\Transparent_Header_Ollie rather than
 			under a kntnt_ function-name prefix. The prefix is still used for
 			identifiers that live in a global registry – the two bootstrap
 			functions in the main plugin file, which cannot be namespaced.

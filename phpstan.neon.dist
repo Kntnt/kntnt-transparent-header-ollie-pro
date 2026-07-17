@@ -9,7 +9,7 @@ parameters:
     # The production PHP: the namespace classes plus the two root files.
     paths:
         - classes
-        - kntnt-transparent-header-ollie-pro.php
+        - kntnt-transparent-header-ollie.php
         - autoloader.php
 
     # Keep in step with the `Requires PHP` header – this is what enforces the

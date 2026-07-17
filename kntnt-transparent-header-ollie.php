@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name:       Kntnt Transparent Header for Ollie Pro
- * Plugin URI:        https://github.com/Kntnt/kntnt-transparent-header-ollie-pro
+ * Plugin Name:       Kntnt Transparent Header for Ollie
+ * Plugin URI:        https://github.com/Kntnt/kntnt-transparent-header-ollie
  * Description:       Adds a transparent-over-hero mode to Ollie Pro's hide-on-scroll-down sticky header.
- * Version:           0.2.0
+ * Version:           0.3.0
  * Requires at least: 6.5
  * Requires PHP:      8.3
  * Requires Plugins:  ollie-pro
@@ -11,10 +11,10 @@
  * Author URI:        https://www.kntnt.com
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       kntnt-transparent-header-ollie-pro
+ * Text Domain:       kntnt-transparent-header-ollie
  * Domain Path:       /languages
  *
- * @package Kntnt\Transparent_Header_Ollie_Pro
+ * @package Kntnt\Transparent_Header_Ollie
  * @since   0.1.0
  */
 
@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // The PHP floor, mirroring the `Requires PHP` header above. WordPress reads the
 // header, but PHP itself cannot, so the guard below needs its own copy.
-const KNTNT_TRANSPARENT_HEADER_OLLIE_PRO_MINIMUM_PHP = '8.3';
+const KNTNT_TRANSPARENT_HEADER_OLLIE_MINIMUM_PHP = '8.3';
 
 /**
  * Guards against running on a PHP version older than the declared floor.
@@ -41,10 +41,10 @@ const KNTNT_TRANSPARENT_HEADER_OLLIE_PRO_MINIMUM_PHP = '8.3';
  *
  * @return bool True when PHP meets the floor; false when the guard fires.
  */
-function kntnt_transparent_header_ollie_pro_requirements_check(): bool {
+function kntnt_transparent_header_ollie_requirements_check(): bool {
 
 	// Nothing to do when the runtime meets the requirement.
-	if ( version_compare( PHP_VERSION, KNTNT_TRANSPARENT_HEADER_OLLIE_PRO_MINIMUM_PHP, '>=' ) ) {
+	if ( version_compare( PHP_VERSION, KNTNT_TRANSPARENT_HEADER_OLLIE_MINIMUM_PHP, '>=' ) ) {
 		return true;
 	}
 
@@ -54,8 +54,8 @@ function kntnt_transparent_header_ollie_pro_requirements_check(): bool {
 		static function (): void {
 			$message = sprintf(
 				/* translators: 1: required PHP version, 2: current version. */
-				__( 'Kntnt Transparent Header for Ollie Pro requires PHP %1$s or later. This server runs PHP %2$s. The plugin has been deactivated.', 'kntnt-transparent-header-ollie-pro' ),
-				KNTNT_TRANSPARENT_HEADER_OLLIE_PRO_MINIMUM_PHP,
+				__( 'Kntnt Transparent Header for Ollie requires PHP %1$s or later. This server runs PHP %2$s. The plugin has been deactivated.', 'kntnt-transparent-header-ollie' ),
+				KNTNT_TRANSPARENT_HEADER_OLLIE_MINIMUM_PHP,
 				PHP_VERSION,
 			);
 			printf( '<div class="notice notice-error"><p>%s</p></div>', esc_html( $message ) );
@@ -75,7 +75,7 @@ function kntnt_transparent_header_ollie_pro_requirements_check(): bool {
 }
 
 // Abort before loading anything else if the runtime cannot support the plugin.
-if ( ! kntnt_transparent_header_ollie_pro_requirements_check() ) {
+if ( ! kntnt_transparent_header_ollie_requirements_check() ) {
 	return;
 }
 
@@ -84,4 +84,4 @@ require_once __DIR__ . '/autoloader.php';
 
 // Bootstrap the plugin singleton, which decides for itself how much of the
 // plugin the active theme can support.
-\Kntnt\Transparent_Header_Ollie_Pro\Plugin::get_instance( __FILE__ );
+\Kntnt\Transparent_Header_Ollie\Plugin::get_instance( __FILE__ );

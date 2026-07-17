@@ -5,17 +5,17 @@
  * Hooks into the WordPress update transient to check for new releases on the
  * plugin's GitHub repository and present them in the admin UI. The target
  * repository is derived from the Plugin URI header, so this class is pointed at
- * Kntnt/kntnt-transparent-header-ollie-pro without a hard-coded slug, and the
+ * Kntnt/kntnt-transparent-header-ollie without a hard-coded slug, and the
  * release asset is identified by content type rather than name – the zip built
  * by build-release-zip.sh carries no version segment.
  *
- * @package Kntnt\Transparent_Header_Ollie_Pro
+ * @package Kntnt\Transparent_Header_Ollie
  * @since   0.1.0
  */
 
 declare( strict_types = 1 );
 
-namespace Kntnt\Transparent_Header_Ollie_Pro;
+namespace Kntnt\Transparent_Header_Ollie;
 
 use stdClass;
 
@@ -35,7 +35,7 @@ final class Updater {
 	 *
 	 * @since 0.1.0
 	 */
-	private const string CACHE_KEY = 'kntnt_transparent_header_ollie_pro_update_check';
+	private const string CACHE_KEY = 'kntnt_transparent_header_ollie_update_check';
 
 	/**
 	 * How long a successful GitHub release response stays cached.

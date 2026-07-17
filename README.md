@@ -1,9 +1,9 @@
-# Kntnt Transparent Header for Ollie Pro
+# Kntnt Transparent Header for Ollie
 
 [![Requires WordPress: 6.5+](https://img.shields.io/badge/WordPress-6.5+-blue.svg)](https://wordpress.org)
 [![Requires PHP: 8.3+](https://img.shields.io/badge/PHP-8.3+-blue.svg)](https://php.net)
 [![License: GPL v2+](https://img.shields.io/badge/License-GPLv2+-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
-[![Latest release](https://img.shields.io/github/v/release/Kntnt/kntnt-transparent-header-ollie-pro)](https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/releases/latest)
+[![Latest release](https://img.shields.io/github/v/release/Kntnt/kntnt-transparent-header-ollie)](https://github.com/Kntnt/kntnt-transparent-header-ollie/releases/latest)
 
 Lets Ollie's sticky header lie transparently over your hero image, then fade to its normal colour as the visitor scrolls.
 
@@ -48,7 +48,7 @@ Both requirements are enforced, and neither nags you:
 
 ## Installation
 
-1. Download [kntnt-transparent-header-ollie-pro.zip](https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/releases/latest/download/kntnt-transparent-header-ollie-pro.zip).
+1. Download [kntnt-transparent-header-ollie.zip](https://github.com/Kntnt/kntnt-transparent-header-ollie/releases/latest/download/kntnt-transparent-header-ollie.zip).
 2. In WordPress, go to **Plugins → Add New → Upload Plugin**.
 3. Choose the file you downloaded and click **Install Now**.
 4. Click **Activate**.
@@ -137,9 +137,9 @@ If your logo or links are hard to read against the hero, that is expected – th
 
 ## Questions, bugs and feature requests
 
-Have a usage question or something to discuss? Please use [Discussions](https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/discussions).
+Have a usage question or something to discuss? Please use [Discussions](https://github.com/Kntnt/kntnt-transparent-header-ollie/discussions).
 
-Found a bug or want to request a feature? Please [open an issue](https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/issues). Search the existing issues first to avoid duplicates.
+Found a bug or want to request a feature? Please [open an issue](https://github.com/Kntnt/kntnt-transparent-header-ollie/issues). Search the existing issues first to avoid duplicates.
 
 ## Extending
 
@@ -268,7 +268,7 @@ One consequence is worth naming, because it is easy to misread the other way: th
 ### Project layout
 
 ```
-kntnt-transparent-header-ollie-pro.php   Plugin header, PHP guard, bootstrap
+kntnt-transparent-header-ollie.php   Plugin header, PHP guard, bootstrap
 autoloader.php                           PSR-4 → classes/
 classes/Plugin.php                       Singleton; theme check and asset wiring
 classes/Updater.php                      Self-update from GitHub releases

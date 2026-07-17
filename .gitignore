@@ -4,7 +4,7 @@
 
 # Release artefacts built by ./build-release-zip.sh.
 /dist/
-/kntnt-transparent-header-ollie-pro.zip
+/kntnt-transparent-header-ollie.zip
 
 # Local environment overrides
 .env

@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 
 ## [Unreleased]
 
+## [0.3.0] – 2026-07-17
+
+### Changed
+
+- Renamed the plugin from *Kntnt Transparent Header for Ollie Pro* to *Kntnt Transparent Header for Ollie*. The old name pointed at the dependency rather than the plugin: it extends the sticky header that the Ollie theme and Ollie Pro ship together, but what it is *about* is that header, not Ollie Pro. Everything that carried the old name moved with it – the slug, text domain and plugin folder are now `kntnt-transparent-header-ollie`, the PHP namespace is `Kntnt\Transparent_Header_Ollie`, and the GitHub repository is now `Kntnt/kntnt-transparent-header-ollie`. Ollie Pro is still required and still named as the dependency; only this plugin's own name changed. Because the slug changed, an existing install does not update across the rename on its own: deactivate and delete the old plugin, then install the renamed one and activate it.
+
 ## [0.2.0] – 2026-07-17
 
 ### Added
@@ -28,6 +34,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 - Self-updating from the project's GitHub releases: the plugin appears under *Dashboard → Updates* like any other, checking the repository named by its own `Plugin URI` header at most once every six hours. A release is only offered when it carries a ZIP asset served from GitHub's own download hosts, so a tampered header cannot redirect the update installer at an attacker's package. Update checks run under every theme, unlike the header feature – a site parked on another theme must not rot on an old version.
 - `build-release-zip.sh`, which builds a release zip containing only runtime files, and can create or update the GitHub release and upload the asset. The asset name carries no version segment, keeping the `latest/download` URL stable.
 
-[Unreleased]: https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/compare/v0.2.0...HEAD
-[0.2.0]: https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/releases/tag/v0.2.0
-[0.1.0]: https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/releases/tag/v0.1.0
+[Unreleased]: https://github.com/Kntnt/kntnt-transparent-header-ollie/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/Kntnt/kntnt-transparent-header-ollie/releases/tag/v0.3.0
+[0.2.0]: https://github.com/Kntnt/kntnt-transparent-header-ollie/releases/tag/v0.2.0
+[0.1.0]: https://github.com/Kntnt/kntnt-transparent-header-ollie/releases/tag/v0.1.0

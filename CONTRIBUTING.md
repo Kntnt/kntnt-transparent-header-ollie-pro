@@ -1,4 +1,4 @@
-# Contributing to Kntnt Transparent Header for Ollie Pro
+# Contributing to Kntnt Transparent Header for Ollie
 
 Thank you for considering a contribution. This plugin does one small thing – it lets Ollie's sticky header lie transparently over a hero image – and contributions of every size help, from a typo fix to a new capability.
 
@@ -6,8 +6,8 @@ This file assumes nothing beyond a terminal. If you have never contributed to a 
 
 ## Ways to contribute
 
-- **Report a bug or request a feature.** [Open an issue](https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/issues), and search the existing issues first to avoid duplicates.
-- **Ask a question or float an idea.** Use [Discussions](https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/discussions) rather than the issue tracker.
+- **Report a bug or request a feature.** [Open an issue](https://github.com/Kntnt/kntnt-transparent-header-ollie/issues), and search the existing issues first to avoid duplicates.
+- **Ask a question or float an idea.** Use [Discussions](https://github.com/Kntnt/kntnt-transparent-header-ollie/discussions) rather than the issue tracker.
 - **Submit a pull request.** Fix a bug, improve the documentation, add a translation or implement a feature.
 
 For anything larger than a small fix, open an issue or a discussion first so the approach can be agreed before you invest the work.
@@ -34,11 +34,11 @@ Before you change anything, read [`AGENTS.md`](AGENTS.md) and the [Development s
 
 Every change reaches this project as a **pull request from your own fork** – that is the only route in, since pushing a branch straight to this repository needs write access nobody outside the project has.
 
-Click **Fork** at the top of [the repository](https://github.com/Kntnt/kntnt-transparent-header-ollie-pro) to get your own copy, then replace `YOUR-USERNAME` below:
+Click **Fork** at the top of [the repository](https://github.com/Kntnt/kntnt-transparent-header-ollie) to get your own copy, then replace `YOUR-USERNAME` below:
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/kntnt-transparent-header-ollie-pro.git
-cd kntnt-transparent-header-ollie-pro
+git clone https://github.com/YOUR-USERNAME/kntnt-transparent-header-ollie.git
+cd kntnt-transparent-header-ollie
 composer install
 ```
 
@@ -98,7 +98,7 @@ There is deliberately **no test suite**. The plugin's only logic is deciding whe
 - **Code** follows the project coding standard in [`agents.d/coding-standard/`](agents.d/coding-standard/) – read `general.md` plus the module for whatever you touch (WordPress, PHP, JavaScript, Bash).
 - **The surface is WordPress's, not PSR-12's.** Tabs, `$snake_case`, `Pascal_Snake_Case` classes, padded parentheses – that is WP-CS, and PSR-12 gives way wherever the two disagree about how code should look.
 - **The departures from WP-CS are where it shows its age.** WP-CS still carries rules written for a PHP that no longer exists, and there the project standard wins instead: `array()` predates the `[ ]` literal, `class-foo.php` filenames predate PSR-4 autoloading, `kntnt_` function prefixes predate namespaces, and Yoda conditions predate `strict_types`, which removed the assignment-typo hazard they were guarding against. `wordpress.md` names those four outright, and they are not quite the whole list – WP-CS also demands the `=`/`=>` alignment the general rules forbid, and forbids the blank lines the paragraph rule requires. `phpcs.xml.dist` switches off the sniff behind each one, with the reason spelled out above every exclusion. So the code follows neither standard whole, by intent: do not ‘correct’ any of it towards upstream WP-CS, and note that **`phpcbf` will not revert those deviations** – they are excluded, not tolerated.
-- **Naming** follows the conventions in [`AGENTS.md`](AGENTS.md): namespace `Kntnt\Transparent_Header_Ollie_Pro`, slug and text domain `kntnt-transparent-header-ollie-pro`, and the `kntnt_transparent_header_ollie_pro_` prefix for anything in a global registry. The two CSS classes `has-transparent-header` and `is-scrolled` are a documented exception and carry no prefix.
+- **Naming** follows the conventions in [`AGENTS.md`](AGENTS.md): namespace `Kntnt\Transparent_Header_Ollie`, slug and text domain `kntnt-transparent-header-ollie`, and the `kntnt_transparent_header_ollie_` prefix for anything in a global registry. The two CSS classes `has-transparent-header` and `is-scrolled` are a documented exception and carry no prefix.
 
 ## Pre-1.0 policy
 
@@ -120,7 +120,7 @@ Your contribution ends there. The maintainer merges it and cuts the release afte
 You do not need this to contribute – it is here for when you want to install your own build on a site, or you changed the build script and need to see what comes out.
 
 ```bash
-./build-release-zip.sh                       # → dist/kntnt-transparent-header-ollie-pro.zip
+./build-release-zip.sh                       # → dist/kntnt-transparent-header-ollie.zip
 ./build-release-zip.sh --output ~/Desktop    # → somewhere else
 ./build-release-zip.sh --help                # every option
 ```

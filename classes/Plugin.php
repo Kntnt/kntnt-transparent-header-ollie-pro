@@ -5,16 +5,16 @@
  * Holds the absolute path to the main plugin file and registers the hooks that
  * load the stylesheet and script implementing transparent header mode.
  *
- * @package Kntnt\Transparent_Header_Ollie_Pro
+ * @package Kntnt\Transparent_Header_Ollie
  * @since   0.1.0
  */
 
 declare( strict_types = 1 );
 
-namespace Kntnt\Transparent_Header_Ollie_Pro;
+namespace Kntnt\Transparent_Header_Ollie;
 
 /**
- * Singleton entry point for the Kntnt Transparent Header for Ollie Pro plugin.
+ * Singleton entry point for the Kntnt Transparent Header for Ollie plugin.
  *
  * Constructed once by get_instance(), only after the main plugin file has
  * established that the runtime and the active theme can support the plugin. The
@@ -30,7 +30,7 @@ final class Plugin {
 	 *
 	 * @since 0.1.0
 	 */
-	private const string HANDLE = 'kntnt-transparent-header-ollie-pro';
+	private const string HANDLE = 'kntnt-transparent-header-ollie';
 
 	/**
 	 * Ollie's own stylesheet handle, from the theme's `Ollie` namespace.

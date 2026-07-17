@@ -1,5 +1,5 @@
 {
-    "name": "kntnt/kntnt-transparent-header-ollie-pro",
+    "name": "kntnt/kntnt-transparent-header-ollie",
     "description": "WordPress plugin that gives Ollie's sticky header a transparent-over-hero mode.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
@@ -22,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Kntnt\\Transparent_Header_Ollie_Pro\\": "classes/"
+            "Kntnt\\Transparent_Header_Ollie\\": "classes/"
         }
     },
     "config": {

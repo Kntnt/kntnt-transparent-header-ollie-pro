@@ -7,10 +7,10 @@
  * `vendor/` is neither shipped nor committed. Loading classes through it would
  * make the plugin fatal on any install that never ran `composer install`.
  *
- * Maps `Kntnt\Transparent_Header_Ollie_Pro\<Class_Name>` to
+ * Maps `Kntnt\Transparent_Header_Ollie\<Class_Name>` to
  * `classes/<Class_Name>.php`, with sub-namespaces as sub-directories.
  *
- * @package Kntnt\Transparent_Header_Ollie_Pro
+ * @package Kntnt\Transparent_Header_Ollie
  * @since   0.1.0
  */
 
@@ -34,7 +34,7 @@ spl_autoload_register(
 
 		// Ignore every class outside the plugin's namespace – other autoloaders
 		// own those, and this one must not answer for them.
-		$prefix = 'Kntnt\\Transparent_Header_Ollie_Pro\\';
+		$prefix = 'Kntnt\\Transparent_Header_Ollie\\';
 		if ( ! str_starts_with( $class_name, $prefix ) ) {
 			return;
 		}
