@@ -1,10 +1,32 @@
 # Kntnt Transparent Header for Ollie Pro
 
+[![Requires WordPress: 6.7+](https://img.shields.io/badge/WordPress-6.7+-blue.svg)](https://wordpress.org)
+[![Requires PHP: 8.5+](https://img.shields.io/badge/PHP-8.5+-blue.svg)](https://php.net)
+[![License: GPL v2+](https://img.shields.io/badge/License-GPLv2+-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
+
 Gives Ollie's sticky header a transparent-over-hero mode: transparent at the top of the page, fading to your own background colour once the visitor scrolls.
 
-Requires the **Ollie** theme and **Ollie Pro**. Sticky positioning and hide-on-scroll-down are theirs — this plugin only adds what they have no concept of, and works around two of their defects.
+Sticky positioning and hide-on-scroll-down belong to the **Ollie** theme and **Ollie Pro** — this plugin only adds what they have no concept of, and works around two of their defects.
 
 No settings page. No CSS to write. You add one class in the Site Editor.
+
+## Requirements
+
+| | |
+|---|---|
+| WordPress | 6.7 or later |
+| PHP | 8.5 or later |
+| Theme | **Ollie**, or any child theme of it |
+| Plugin | **Ollie Pro** |
+
+Both requirements are enforced, and neither nags you:
+
+- **Ollie Pro** is declared in the `Requires Plugins` header, so WordPress will not activate this plugin without it, and deactivates this one if you deactivate Ollie Pro.
+- **The Ollie theme** is checked at load. Under any other theme the plugin does nothing at all — no assets, no hooks, and no admin notice, since Ollie Pro already reports a wrong theme and there is no point saying it twice.
+
+## Installation
+
+Download the plugin, upload it under *Plugins → Add New → Upload Plugin*, and activate. Then follow *Step by step* below to build the header.
 
 ## How it works
 

@@ -1,126 +1,102 @@
 <?php
 /**
  * Plugin Name:       Kntnt Transparent Header for Ollie Pro
- * Description:       Gives Ollie's sticky header a transparent-over-hero mode, and works around two Ollie Pro defects. Ships no colours — style the `is-transparent` class from your design layer.
+ * Plugin URI:        https://github.com/Kntnt/kntnt-transparent-header-ollie-pro
+ * Description:       Gives Ollie's sticky header a transparent-over-hero mode, and works around two Ollie Pro defects. Ships no colours — the header's own background simply reappears once scrolled.
  * Version:           1.0.0
  * Requires at least: 6.7
  * Requires PHP:      8.5
  * Requires Plugins:  ollie-pro
  * Author:            Thomas Barregren
+ * Author URI:        https://www.kntnt.com
  * License:           GPL-2.0-or-later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       kntnt-transparent-header-ollie-pro
+ * Domain Path:       /languages
  *
  * @package Kntnt\Transparent_Header_Ollie_Pro
+ * @since   1.0.0
  */
 
-declare(strict_types=1);
+declare( strict_types = 1 );
 
-namespace Kntnt\Transparent_Header_Ollie_Pro;
-
-defined('ABSPATH') || exit;
+// Prevent direct file access outside WordPress.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
- * Loads the assets that implement transparent header mode.
+ * Guards against running on a PHP version older than the 8.5 floor.
+ *
+ * The plugin header already makes WordPress block activation on older installs.
+ * This is a second line of defence for environments that load the plugin outside
+ * the normal activation path: it shows an admin notice and deactivates the
+ * plugin so it never reaches code that would fatally error.
+ *
+ * @since 1.0.0
+ *
+ * @return bool True when PHP is 8.5 or newer; false when the guard fires.
  */
-final class Plugin {
+function kntnt_transparent_header_ollie_pro_requirements_check(): bool {
 
-	/**
-	 * Handle used for both the stylesheet and the script.
-	 */
-	private const HANDLE = 'kntnt-transparent-header-ollie-pro';
-
-	/**
-	 * Ollie's own stylesheet handle, derived from the theme's `Ollie` namespace.
-	 *
-	 * The stylesheet must load after it: our transparent-mode rule and Ollie's
-	 * sticky rule have identical specificity, so source order decides the winner.
-	 */
-	private const THEME_HANDLE = 'ollie';
-
-	/**
-	 * Ollie's template directory, i.e. the slug of the theme this plugin extends.
-	 *
-	 * Equal to THEME_HANDLE by coincidence, not by rule: one names a registered
-	 * stylesheet, the other a directory on disk, and either could change alone.
-	 */
-	private const THEME_TEMPLATE = 'ollie';
-
-	/**
-	 * Fallback asset version, used when a file cannot be stat'ed.
-	 */
-	private const VERSION = '1.0.0';
-
-	/**
-	 * Hooks the plugin into WordPress, unless the active theme is not Ollie.
-	 *
-	 * Everything here extends rules that only Ollie and Ollie Pro ship, so under
-	 * any other theme the plugin has nothing to act on and registers no hooks at
-	 * all. It stays silent about it: Ollie Pro is a hard dependency and already
-	 * tells the user when the theme is wrong, so a second notice saying the same
-	 * thing would only be noise.
-	 *
-	 * Enqueues late so the theme's stylesheet is already registered and can be
-	 * depended on; plugins hook earlier than themes, so the default priority
-	 * would put this stylesheet first and silently lose the cascade.
-	 *
-	 * @return void
-	 */
-	public static function init(): void {
-		// `get_template()` names the parent theme, so Ollie child themes — which
-		// inherit the very rules this plugin patches — pass just like Ollie itself.
-		if (get_template() !== self::THEME_TEMPLATE) {
-			return;
-		}
-
-		add_action('wp_enqueue_scripts', [self::class, 'enqueue_assets'], 20);
+	// Nothing to do when the runtime meets the requirement.
+	if ( version_compare( PHP_VERSION, '8.5', '>=' ) ) {
+		return true;
 	}
 
-	/**
-	 * Enqueues the frontend stylesheet and script.
-	 *
-	 * Loaded on every page, not only the transparent ones: the stylesheet also
-	 * carries two fixes that apply to every sticky header. The script goes in the
-	 * footer without `defer` so it runs during parse and sets the class before
-	 * first paint — deferring it makes the header flash solid on load.
-	 *
-	 * @return void
-	 */
-	public static function enqueue_assets(): void {
-		$url = plugin_dir_url(__FILE__);
-		$dir = plugin_dir_path(__FILE__);
+	// Surface the problem as an admin notice.
+	add_action(
+		'admin_notices',
+		static function (): void {
+			$message = sprintf(
+				/* translators: 1: required PHP version, 2: current PHP version. */
+				__( 'Kntnt Transparent Header for Ollie Pro requires PHP %1$s or later. This server runs PHP %2$s. The plugin has been deactivated.', 'kntnt-transparent-header-ollie-pro' ),
+				'8.5',
+				PHP_VERSION,
+			);
+			printf( '<div class="notice notice-error"><p>%s</p></div>', esc_html( $message ) );
+		},
+	);
 
-		// Depending on a handle that was never registered makes WordPress drop the
-		// stylesheet entirely, so only claim the dependency when it really exists.
-		$deps = wp_style_is(self::THEME_HANDLE, 'registered') ? [self::THEME_HANDLE] : [];
+	// Deactivate the plugin so WordPress does not try to load it again.
+	add_action(
+		'admin_init',
+		static function (): void {
+			deactivate_plugins( plugin_basename( __FILE__ ) );
+		},
+	);
 
-		wp_enqueue_style(
-			self::HANDLE,
-			"{$url}assets/header.css",
-			$deps,
-			self::asset_version("{$dir}assets/header.css"),
-		);
-
-		wp_enqueue_script(
-			self::HANDLE,
-			"{$url}assets/header.js",
-			[],
-			self::asset_version("{$dir}assets/header.js"),
-			['in_footer' => true],
-		);
-	}
-
-	/**
-	 * Returns a cache-busting version for an asset.
-	 *
-	 * Uses the file's modification time, so edits take effect without a version
-	 * bump; falls back to the plugin version if the file is missing.
-	 *
-	 * @param string $path Absolute path to the asset.
-	 * @return string
-	 */
-	private static function asset_version(string $path): string {
-		return file_exists($path) ? (string) filemtime($path) : self::VERSION;
-	}
+	return false;
 
 }
 
-Plugin::init();
+/**
+ * Reports whether the active theme is Ollie, the theme this plugin extends.
+ *
+ * `get_template()` names the parent theme, so Ollie child themes — which inherit
+ * the very rules this plugin patches — pass just like Ollie itself.
+ *
+ * Deliberately silent when it fails: Ollie Pro is a hard dependency (see the
+ * `Requires Plugins` header) and already tells the user when the theme is wrong,
+ * so a second notice saying the same thing would only be noise.
+ *
+ * @since 1.0.0
+ *
+ * @return bool True when Ollie or one of its child themes is active.
+ */
+function kntnt_transparent_header_ollie_pro_theme_check(): bool {
+	return get_template() === 'ollie';
+}
+
+// Abort before loading anything else when the runtime or the active theme
+// cannot support the plugin. Under a foreign theme this is the whole plugin:
+// no autoloader, no class, no hooks — it costs one cached option read.
+if ( ! kntnt_transparent_header_ollie_pro_requirements_check() || ! kntnt_transparent_header_ollie_pro_theme_check() ) {
+	return;
+}
+
+// Load the PSR-4 autoloader for the plugin's own classes.
+require_once __DIR__ . '/autoloader.php';
+
+// Bootstrap the plugin singleton, which wires every hook.
+\Kntnt\Transparent_Header_Ollie_Pro\Plugin::get_instance( __FILE__ );
