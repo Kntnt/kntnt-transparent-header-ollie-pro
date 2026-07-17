@@ -38,7 +38,9 @@ composer phpcbf                   # fixes most violations automatically
 shellcheck build-release-zip.sh   # if you touched the build script
 ```
 
-`phpcs` fails on warnings as well as errors, so a clean run means clean — there is no expected noise to look past. The two lines that genuinely cannot be wrapped carry their own `phpcs:ignore` naming the sniff and the reason; that is the only sanctioned way to silence a finding, and it needs the smallest possible scope.
+`phpcs` fails on warnings as well as errors, so a clean run means clean — there is no expected noise to look past. Silencing a finding needs a `phpcs:ignore` naming the sniff and the reason, at the smallest possible scope; there are none in the codebase today, and that is the preferred state.
+
+Two rules the standard states are **not** enforced, because no phpcs sniff can express them: a comment on its own line stops at column 80, and `=`/`=>` are never vertically aligned. Both await a custom sniff ([#37](https://github.com/Kntnt/kntnt-code-skills/issues/37), [#38](https://github.com/Kntnt/kntnt-code-skills/issues/38)). A green gate does not mean you followed them — read `agents.d/coding-standard/general.md` and `php.md`.
 
 There is deliberately **no test suite**. The plugin's only logic is deciding when to enqueue two files, so there is nothing a unit test could meaningfully constrain. If you add real logic, say so in the pull request and we will add tests with it.
 

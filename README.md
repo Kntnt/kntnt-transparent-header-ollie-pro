@@ -247,9 +247,9 @@ composer phpcbf    # fixes most violations automatically
 shellcheck build-release-zip.sh
 ```
 
-`composer phpcs` must be **silent** — no errors and no warnings — before you open a pull request. Warnings fail the gate too, so anything it prints is a real finding, not noise to look past.
+`composer phpcs` must be **silent** — no errors and no warnings — before you open a pull request. Warnings fail the gate too, so anything it prints is a real finding, not noise to look past. Suppressing a finding needs a `phpcs:ignore` that names the sniff and gives the reason, at the smallest possible scope; there are currently none in the codebase, and that is the preferred state.
 
-The two lines that genuinely cannot be wrapped — the plugin header's `Description:`, which WordPress parses from a single line, and a translatable string, which breaks extraction if split — carry their own `phpcs:ignore` naming the sniff and the reason. That is the only sanctioned way to silence a finding: name the sniff, give the reason, keep the scope as small as possible.
+Two rules the coding standard states are **not** enforced by the gate, because no phpcs sniff can express them — a comment on its own line stops at column 80, and `=`/`=>` are never vertically aligned. Both need a custom sniff ([#37](https://github.com/Kntnt/kntnt-code-skills/issues/37), [#38](https://github.com/Kntnt/kntnt-code-skills/issues/38)). Until then they are your responsibility, not the linter's. Code lines have no length limit at all — a long line is preferred over breaking arguments apart to satisfy a column count.
 
 The ruleset in `phpcs.xml.dist` deliberately switches off several sniffs where the WordPress Coding Standards contradict this project's standard. Do not "fix" the code toward upstream WP-CS, and note that **`phpcbf` will not revert those deviations** — they are excluded, not tolerated.
 

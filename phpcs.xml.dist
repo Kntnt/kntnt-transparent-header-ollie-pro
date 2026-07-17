@@ -56,6 +56,14 @@
 			separate sniffs enforce the opposite — one for assignments, one for
 			the double arrows inside a multi-line array — so both are excluded and
 			the no-alignment rule wins.
+
+			Excluding is the strongest available move, not a satisfying one: no
+			installed sniff can *enforce* single-space. WordPress.Arrays.
+			MultipleStatementAlignment only ever demands alignment, and its
+			maxColumn property does not invert it — set low, every item fails the
+			`$index_end_cols` filter and the sniff returns without checking at all.
+			So aligned `=>` passes this gate silently; only review catches it.
+			Enforcement needs a custom sniff — Kntnt/kntnt-code-skills#38.
 		-->
 		<exclude name="Generic.Formatting.MultipleStatementAlignment"/>
 		<exclude name="WordPress.Arrays.MultipleStatementAlignment"/>
@@ -82,18 +90,19 @@
 	<!-- Require short array syntax ([ ]) — never array(). -->
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
 
-	<!-- The standard caps code at 120 cols. Over-length lines are warnings, not
-	     hard errors, but the gate below fails on them anyway: the two lines that
-	     genuinely cannot be wrapped — the plugin header's Description and a
-	     translatable string — carry their own `phpcs:ignore` naming this sniff
-	     and the reason. A clean run means clean; there is no expected noise to
-	     look past. -->
-	<rule ref="Generic.Files.LineLength">
-		<properties>
-			<property name="lineLimit" value="120"/>
-			<property name="absoluteLineLimit" value="0"/>
-		</properties>
-	</rule>
+	<!--
+		Generic.Files.LineLength is deliberately absent. The standard puts no upper
+		limit on a code line (agents.d/coding-standard/php.md, "Line width"): a long
+		line beats breaking arguments apart to satisfy a column count.
+
+		The standard's one width rule — a comment on its own line never passes
+		column 80 — is NOT enforced here, because it cannot be. LineLength carries a
+		single limit for every line and no shipped sniff measures comments
+		separately; the standard's trailing-comment exception is doubly beyond it,
+		since `$x = f(); // note` is one line that is both code and comment.
+		Enforcing it needs a custom sniff — Kntnt/kntnt-code-skills#37. Until then
+		comment width is a review responsibility, not a gate.
+	-->
 
 	<!-- Minimum supported versions for the WordPress and PHP compatibility sniffs. -->
 	<config name="minimum_supported_wp_version" value="6.7"/>

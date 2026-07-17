@@ -32,7 +32,16 @@ Language-level preferences, regardless of project.
 - Trailing commas in multi-line arrays, parameter lists, and argument lists.
 - `?:` and `??` as appropriate; do not chain them into puzzles.
 - **Conditions: natural order by default.** Yoda conditions are acceptable when they make intent clearer for an experienced reader — e.g. idiomatic null-checks (`if ( null === $value )`) or where the test is fundamentally a boolean assertion rather than a comparison. The choice is purely about readability.
-- Code may go up to the project's max line width (default 120 cols). Comments wrap at column 80.
+
+### Line width
+
+> **Locally amended, 2026-07-17.** This section replaces the standard's "Code may go up to the project's max line width (default 120 cols). Comments wrap at column 80." Upstream: [Kntnt/kntnt-code-skills#37](https://github.com/Kntnt/kntnt-code-skills/issues/37). `/coding-standard --update` reverts this file — re-apply until the upstream release lands.
+
+- **A comment on its own line never passes column 80.** Wherever it sits: file, class or method docblock, a `//` topic sentence above a paragraph, a block comment inside a function. No exception by position.
+- **A comment at the end of a code line is never wrapped.** It may run as long as it needs to. Breaking a trailing comment onto a second line is worse than letting it run.
+- **Code lines have no upper limit.**
+
+This is not an invitation to write long lines. A long line is *preferable to a disruptive break*: removing the cap removes the pressure to break function arguments and similar purely to satisfy a column count, which costs more readability than the length ever did. Break where the break serves the reader — see *Motivated line breaks* in the general rules — never to satisfy a count.
 
 ### Surface style — PSR-12
 
