@@ -38,6 +38,17 @@ final class Updater {
 	private const string CACHE_KEY = 'kntnt_transparent_header_ollie_pro_update_check';
 
 	/**
+	 * How long a successful GitHub release response stays cached.
+	 *
+	 * Six hours keeps update checks far inside GitHub's unauthenticated rate
+	 * limit of 60 requests per hour, while still surfacing a new release the
+	 * same day it is published.
+	 *
+	 * @since 0.1.0
+	 */
+	private const int CACHE_TTL = 6 * HOUR_IN_SECONDS;
+
+	/**
 	 * GitHub hosts a release asset may be downloaded from.
 	 *
 	 * An asset pointing anywhere else is ignored rather than offered as an
@@ -162,9 +173,7 @@ final class Updater {
 		}
 
 		// Cache only successful decodes; failures are not worth caching.
-		$filtered = apply_filters( 'kntnt_transparent_header_ollie_pro_update_check_ttl', 6 * HOUR_IN_SECONDS );
-		$ttl = max( 1, is_int( $filtered ) ? $filtered : 6 * HOUR_IN_SECONDS );
-		set_site_transient( self::CACHE_KEY, $decoded, $ttl );
+		set_site_transient( self::CACHE_KEY, $decoded, self::CACHE_TTL );
 
 		return $decoded;
 

@@ -68,11 +68,11 @@ Two steps in the Site Editor. No CSS required.
 
 4. Ollie Pro's controls now appear under Position:
 
-   1. *Hide in Scroll Down:* Check
+   1. *Hide in Scroll Down:* Check — this one is required. Without it, Ollie Pro writes an inline `position: sticky` onto the header, which the plugin's stylesheet can't override, so the header stays solid and never goes transparent.
 
    2. *Top Offset:* 0
 
-   3. *Unstick on Mobile*: Your choice (off is recommended)
+   3. *Unstick on Mobile*: Has no effect with *Hide in Scroll Down* on.
 
    4. *Sticky Z-Index*: empty
 
@@ -114,7 +114,7 @@ If your logo or links are hard to read against the hero, that is expected – th
 > [!IMPORTANT]
 > **The header must come out as a `<header>` element.**
 >
-> That is what the plugin hangs on: every rule it ships starts with `header.has-transparent-header`, and Ollie's own sticky rule keys on the tag as well. Land the header in a `<div>` instead and nothing happens at all – no error, no effect, just a header that stays solid.
+> That is what transparent mode hangs on: every rule implementing it starts with `header.has-transparent-header`, and Ollie's own sticky rule keys on the tag as well. Land the header in a `<div>` instead and nothing happens at all – no error, no effect, just a header that stays solid.
 >
 > **Using Ollie's ready-made header? Then it is already taken care of, and there is nothing for you to do.** Ollie's templates ship the header part with the tag set explicitly, and the part you built in step 1 carries the **Header** area, which produces `<header>` on its own.
 
@@ -213,15 +213,20 @@ Paste in the browser console on a hero page:
 
 ```js
 const g = document.querySelector('header > .wp-block-group.is-position-sticky');
-console.log({
-  wrapper: g.closest('header').parentElement.className,
-  headerPos: getComputedStyle(g.closest('header')).position,
-  transition: getComputedStyle(g).transition,
-});
+if (!g) {
+  console.log('Not found: no sticky Group directly inside a <header>. Either the header did not come out as a <header> element, or the sticky Group is not its direct child.');
+} else {
+  console.log({
+    wrapper: g.closest('header').parentElement.className,
+    headerPos: getComputedStyle(g.closest('header')).position,
+    transition: getComputedStyle(g).transition,
+  });
+}
 ```
 
+- **Not found** means the structure itself is wrong, and it is the most common cause of ‘nothing happens at all’: check the header is a `<header>` element and that the Group sits directly inside it, as in step 1.
 - `wrapper` **must** be `wp-site-blocks`. If it says `wp-block-group` you have a wrapper – see step 2.
-- `headerPos` should be `fixed` on a transparent header, `sticky` otherwise.
+- `headerPos` should be `fixed` on a transparent header, `sticky` otherwise. If it is `sticky` on a template that should be transparent, check that *Hide in Scroll Down* is enabled (step 1) – without it Ollie Pro forces `sticky` inline and the plugin can't take over.
 - `transition` must contain `transform 0.3s …` **plus** `background-color`. If you see only `color 0.2s`, something set a hover colour on the group.
 
 ## How you can contribute
@@ -234,14 +239,25 @@ This section is for developers reading the code – whether to satisfy your curi
 
 ### Why you can't simplify this
 
-The whole plugin is three CSS rules and one script. Every one of them looks naive or removable, and every one is load-bearing. The obvious cleanup is listed against each, because that cleanup is how each bug gets reintroduced.
+The whole plugin is four CSS rules and one script. Every one of them looks naive or removable, and every one is load-bearing. The obvious cleanup is listed against each, because that cleanup is how each bug gets reintroduced.
 
 | Rule | The tempting ‘fix’ | What it costs |
 |---|---|---|
 | `--sticky-full-offset: var(--wp-admin--admin-bar--height, 0px)` | Delete it – nothing references it in this codebase. | Ollie Pro hides the header with `translateY(calc(-100% - var(--sticky-full-offset)))` but only sets that variable when a Top Offset is configured, while Ollie pins the header down by the admin bar's height regardless. The header then stops exactly that far short of the top. The admin bar masks the leftover band while it is fixed, but at 600px and below core makes it `absolute` and it scrolls away – leaving a logged-in visitor a 46px strip of header stuck to the top of the screen. Measured, not theorised. |
 | `transition-property: transform, background-color, box-shadow` | Collapse it into the `transition` shorthand. | The shorthand resets Ollie Pro's own `transition: transform …` at equal specificity, and the header snaps instead of sliding. The longhand overrides only the property list, so duration and timing stay inherited from Ollie Pro's rule and the fade cannot drift out of step with the slide. |
 | `position: fixed` on `.has-transparent-header` | Add `!important` to make it win. | It already wins, and not by specificity: Ollie's sticky rule ties it exactly at (0,2,2). It wins on source order alone – which is why the stylesheet is enqueued at priority 20 with a dependency on the `ollie` handle. Change either and the header goes back to `sticky`, in the flow, pushing the hero down. `!important` would paper over that and hide the real dependency. |
+| `background-color: transparent !important` on `:not(.is-scrolled):not(:has([aria-expanded="true"]))` | Drop the `!important`, or drop the `:has()` clause. | The `!important` is not defensiveness: core emits the group's own preset background as `.has-<slug>-background-color { background-color: … !important }`, which nothing without `!important` can beat. Drop the `:has()` clause and an open mega menu or mobile menu hangs over the hero with no backdrop behind it. The clause asks *‘nothing is open’* rather than *‘something is closed’* deliberately: the latter needs a closed element to exist, so a header with no menu at all would never go transparent, and with several toggles a single closed one would keep the header transparent while another stands open. |
 | the `is-scrolled` toggle in `js/header.js` | Have it add `is-transparent` instead – it reads more naturally. | A script-set class cannot exist at first paint, so every page load would render solid, then fade to transparent: a visible flash. Transparency has to be the *default*, i.e. the absence of a class. See [Why the transparent state has no class of its own](#why-the-transparent-state-has-no-class-of-its-own). |
+
+### Why two of those rules aren't scoped to the class
+
+Transparent mode is opt-in per template, so every rule that implements it is scoped to `header.has-transparent-header`. On a template that never opted in, the plugin changes nothing.
+
+The first two rules in the table break that pattern on purpose. They key off `.wp-block-group[data-sticky-on-scroll-up="true"]`, so they reach *every* sticky Ollie Pro header, transparent or not – because the defects they repair have nothing to do with transparency. Scope them to the class and the admin-bar strip comes back on every solid header on the site, which is a bug the plugin already fixed once. It is also why the stylesheet is enqueued on every page rather than only the transparent ones.
+
+Unscoped is not the same as intrusive, and neither rule can touch a design it wasn't asked to. The first only defines a custom property that Ollie Pro already reads and would otherwise leave unset: nothing that doesn't read it can see it. The second only extends a transition property list; on a solid header neither `background-color` nor `box-shadow` ever changes, so it animates nothing.
+
+One consequence is worth naming, because it is easy to misread the other way: neither of the two mentions the `header` tag. The [`<header>` requirement](#2-turn-on-transparent-mode) comes from the transparent-mode rules and from Ollie's own sticky rule – not from these.
 
 ### Project layout
 

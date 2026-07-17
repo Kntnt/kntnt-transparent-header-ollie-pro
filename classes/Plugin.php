@@ -13,8 +13,6 @@ declare( strict_types = 1 );
 
 namespace Kntnt\Transparent_Header_Ollie_Pro;
 
-use LogicException;
-
 /**
  * Singleton entry point for the Kntnt Transparent Header for Ollie Pro plugin.
  *
@@ -97,7 +95,7 @@ final class Plugin {
 	 *                            on calls after the first.
 	 * @return self
 	 */
-	public static function get_instance( string $plugin_file = '' ): self {
+	public static function get_instance( string $plugin_file ): self {
 
 		// Return early when already bootstrapped.
 		if ( self::$instance !== null ) {
@@ -290,32 +288,6 @@ final class Plugin {
 	 */
 	private static function get_version(): string {
 		return self::get_plugin_data()['Version'];
-	}
-
-	/**
-	 * Prevents cloning of the singleton.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @throws LogicException Always, because a singleton must not be cloned.
-	 *
-	 * @return void
-	 */
-	public function __clone() {
-		throw new LogicException( 'Cannot clone a singleton.' );
-	}
-
-	/**
-	 * Prevents unserialisation of the singleton.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @throws LogicException Always – a singleton must not be unserialised.
-	 *
-	 * @return void
-	 */
-	public function __wakeup() {
-		throw new LogicException( 'Cannot unserialize a singleton.' );
 	}
 
 }

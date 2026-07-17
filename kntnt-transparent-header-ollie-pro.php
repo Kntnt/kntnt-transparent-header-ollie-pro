@@ -25,8 +25,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// The PHP floor, mirroring the `Requires PHP` header above. WordPress reads the
+// header, but PHP itself cannot, so the guard below needs its own copy.
+const KNTNT_TRANSPARENT_HEADER_OLLIE_PRO_MINIMUM_PHP = '8.3';
+
 /**
- * Guards against running on a PHP version older than the 8.3 floor.
+ * Guards against running on a PHP version older than the declared floor.
  *
  * The plugin header already makes WordPress block activation on older
  * installs. This is a second line of defence for environments that load the
@@ -35,12 +39,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.1.0
  *
- * @return bool True when PHP is 8.3 or newer; false when the guard fires.
+ * @return bool True when PHP meets the floor; false when the guard fires.
  */
 function kntnt_transparent_header_ollie_pro_requirements_check(): bool {
 
 	// Nothing to do when the runtime meets the requirement.
-	if ( version_compare( PHP_VERSION, '8.3', '>=' ) ) {
+	if ( version_compare( PHP_VERSION, KNTNT_TRANSPARENT_HEADER_OLLIE_PRO_MINIMUM_PHP, '>=' ) ) {
 		return true;
 	}
 
@@ -51,7 +55,7 @@ function kntnt_transparent_header_ollie_pro_requirements_check(): bool {
 			$message = sprintf(
 				/* translators: 1: required PHP version, 2: current version. */
 				__( 'Kntnt Transparent Header for Ollie Pro requires PHP %1$s or later. This server runs PHP %2$s. The plugin has been deactivated.', 'kntnt-transparent-header-ollie-pro' ),
-				'8.3',
+				KNTNT_TRANSPARENT_HEADER_OLLIE_PRO_MINIMUM_PHP,
 				PHP_VERSION,
 			);
 			printf( '<div class="notice notice-error"><p>%s</p></div>', esc_html( $message ) );

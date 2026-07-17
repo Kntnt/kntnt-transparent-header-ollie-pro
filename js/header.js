@@ -15,8 +15,8 @@
     'use strict';
 
     // The header group Ollie Pro made sticky, inside a header that opted into
-    // transparent mode. Every page carries this script, but only such a page has
-    // anything to toggle.
+    // transparent mode. Every page carries this script, but only such a page
+    // has anything to toggle.
     const HEADER_SELECTOR = 'header.has-transparent-header > .wp-block-group.is-position-sticky';
     const SOLID_THRESHOLD = 20; // Scroll depth in px past which the header turns solid.
     const header = document.querySelector(HEADER_SELECTOR);
@@ -37,8 +37,8 @@
     };
 
     // Coalesce a burst of scroll events into one class update per frame. The
-    // listener is passive: it never calls preventDefault, and declaring that keeps
-    // it off the scrolling critical path.
+    // listener is passive: it never calls preventDefault, and declaring that
+    // keeps it off the scrolling critical path.
     window.addEventListener('scroll', () => {
 
         if (isTicking) {

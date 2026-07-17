@@ -10,16 +10,18 @@
  *
  * The transparent state is the ABSENCE of `is-scrolled`, never a class of its
  * own. That is deliberate: a JavaScript-applied class cannot exist at first
- * paint, so making transparency the exception meant every page load rendered the
- * solid header first and then animated it away – a visible flash. Target
- * `:not(.is-scrolled)` for the top state and it is correct before any script runs.
+ * paint, so making transparency the exception meant every page load rendered
+ * the solid header first and then animated it away – a visible flash. Target
+ * `:not(.is-scrolled)` for the top state and it is correct before any script
+ * runs.
  */
 
-/* Ollie Pro hides the header with translateY(calc(-100% - var(--sticky-full-offset)))
-   but only ever sets that variable when a Top Offset is configured. The theme pins
-   the header down by the admin bar's height regardless, so without this the group
-   stops exactly that far short of the top. While the admin bar is fixed it masks the
-   leftover band; at 600px and below core makes it absolute, it scrolls away, and the
+/* Ollie Pro hides the header with
+   translateY(calc(-100% - var(--sticky-full-offset))) but only ever sets that
+   variable when a Top Offset is configured. The theme pins the header down by
+   the admin bar's height regardless, so without this the group stops exactly
+   that far short of the top. While the admin bar is fixed it masks the leftover
+   band; at 600px and below core makes it absolute, it scrolls away, and the
    band shows as a strip of header hanging at the top of the screen. */
 .wp-block-group[data-sticky-on-scroll-up="true"] {
   --sticky-full-offset: var(--wp-admin--admin-bar--height, 0px);
@@ -29,16 +31,17 @@
    only `transform`, so background-color and box-shadow would flip in one frame.
    Override ONLY transition-property, never the `transition` shorthand: the
    shorthand resets Ollie Pro's transform transition and makes the header snap
-   instead of slide. Duration and timing are inherited from the plugin's own rule,
+   instead of slide. Duration and timing are inherited from Ollie Pro's rule,
    so the fade and the slide stay in step by construction. */
 .wp-block-group[data-sticky-on-scroll-up="true"].is-position-sticky {
   transition-property: transform, background-color, box-shadow;
 }
 
-/* Take the header out of the flow so the hero starts at the top of the viewport.
-   Ollie's rule makes every sticky header `sticky`, which keeps it in the flow and
-   pushes the hero down. That rule and this one have identical specificity (0,2,2),
-   so this only wins because the stylesheet is enqueued after the theme's. */
+/* Take the header out of the flow so the hero starts at the top of the
+   viewport. Ollie's rule makes every sticky header `sticky`, which keeps it in
+   the flow and pushes the hero down. That rule and this one have identical
+   specificity (0,2,2), so this only wins because the stylesheet is enqueued
+   after the theme's. */
 body:not(.wp-admin) header.has-transparent-header {
   position: fixed;
   left: 0;
@@ -46,19 +49,20 @@ body:not(.wp-admin) header.has-transparent-header {
   top: calc(0px + var(--wp-admin--admin-bar--height, 0px));
 }
 
-/* The transparent state itself: no background, no shadow, until scrolled. This is
-   the default, so it is already correct in the first paint – no script involved.
-   The solid state needs no rule at all: once this stops matching, the block's own
-   editor-set background simply reappears. That is why this file ships no colours.
-   `!important` is unavoidable – core emits the block's preset background as
+/* The transparent state itself: no background, no shadow, until scrolled. This
+   is the default, so it is already correct in the first paint – no script
+   involved. The solid state needs no rule at all: once this stops matching, the
+   block's own editor-set background simply reappears. That is why this file
+   ships no colours. `!important` is unavoidable – core emits the block's preset
+   background as:
    `.has-<slug>-background-color { background-color: … !important }`.
 
    An open disclosure inside the header (a mega menu, a mobile menu) drops the
    header back to solid, so the panel hanging off it has a backdrop instead of
-   floating over the hero. Phrased as "nothing is open" rather than "something is
-   closed": the latter needs a closed element to exist, so a header with no menu
-   at all would never go transparent, and with several toggles one closed one
-   would be enough to keep it transparent while another stands open. */
+   floating over the hero. Phrased as "nothing is open" rather than "something
+   is closed": the latter needs a closed element to exist, so a header with no
+   menu at all would never go transparent, and with several toggles one closed
+   one would be enough to keep it transparent while another stands open. */
 header.has-transparent-header > .wp-block-group:not(.is-scrolled):not(:has([aria-expanded="true"])) {
   background-color: transparent !important;
   box-shadow: none !important;

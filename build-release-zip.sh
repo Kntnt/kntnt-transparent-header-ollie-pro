@@ -18,9 +18,16 @@
 #
 # Exit codes:
 #   0  success
-#   1  usage error, missing tool, or build failure
+#   1  usage error: unknown, missing, or contradictory arguments
+#   2  a required tool is not on PATH
+#   3  build or release failure: the tag or the release is not in the expected
+#      state
 
 set -euo pipefail
+
+readonly EXIT_USAGE=1
+readonly EXIT_MISSING_TOOL=2
+readonly EXIT_FAILURE=3
 
 REPO="Kntnt/kntnt-transparent-header-ollie-pro"
 PLUGIN_DIR="kntnt-transparent-header-ollie-pro"
@@ -82,10 +89,16 @@ HELP
 	exit "${1:-0}"
 }
 
-# Abort with a message on stderr.
+# Abort with a message on stderr, using the given exit code (default: build
+# failure).
 die() {
 	echo "Error: $1" >&2
-	exit 1
+	exit "${2:-$EXIT_FAILURE}"
+}
+
+# Report whether a GitHub release already exists for TAG.
+release_exists() {
+	gh release view "$TAG" --repo "$REPO" &>/dev/null
 }
 
 # Parse the command line into TAG, OUTPUT_PATH and RELEASE_ACTION.
@@ -97,24 +110,24 @@ parse_args() {
 				usage 0
 				;;
 			--tag)
-				[[ $# -lt 2 ]] && die "--tag requires a value."
+				[[ $# -lt 2 ]] && die "--tag requires a value." "$EXIT_USAGE"
 				TAG="$2"
 				shift 2
 				;;
 			--output)
-				[[ $# -lt 2 ]] && die "--output requires a value."
+				[[ $# -lt 2 ]] && die "--output requires a value." "$EXIT_USAGE"
 				OUTPUT_PATH="$2"
 				shift 2
 				;;
 			--update | --create)
-				[[ -n "$RELEASE_ACTION" ]] && die "--update and --create are mutually exclusive."
+				[[ -n "$RELEASE_ACTION" ]] && die "--update and --create are mutually exclusive." "$EXIT_USAGE"
 				RELEASE_ACTION="${1#--}"
 				shift
 				;;
 			*)
 				echo "Error: Unknown option: $1" >&2
 				echo >&2
-				usage 1
+				usage "$EXIT_USAGE"
 				;;
 		esac
 	done
@@ -130,8 +143,8 @@ validate_args() {
 		mkdir -p "$OUTPUT_PATH"
 	fi
 
-	[[ -n "$OUTPUT_PATH" && -n "$RELEASE_ACTION" ]] && die "--output and --${RELEASE_ACTION} cannot be combined."
-	[[ -n "$RELEASE_ACTION" && -z "$TAG" ]] && die "--${RELEASE_ACTION} requires --tag."
+	[[ -n "$OUTPUT_PATH" && -n "$RELEASE_ACTION" ]] && die "--output and --${RELEASE_ACTION} cannot be combined." "$EXIT_USAGE"
+	[[ -n "$RELEASE_ACTION" && -z "$TAG" ]] && die "--${RELEASE_ACTION} requires --tag." "$EXIT_USAGE"
 
 	return 0
 
@@ -146,11 +159,11 @@ resolve_output_file() {
 	if [[ -d "$OUTPUT_PATH" ]]; then
 		OUTPUT_FILE="$(cd "$OUTPUT_PATH" && pwd)/$ZIP_NAME"
 	elif [[ "$OUTPUT_PATH" == */ ]]; then
-		die "Directory '${OUTPUT_PATH}' does not exist."
+		die "Directory '${OUTPUT_PATH}' does not exist." "$EXIT_USAGE"
 	else
 		local parent_dir="${OUTPUT_PATH%/*}"
 		[[ "$parent_dir" == "$OUTPUT_PATH" ]] && parent_dir="."
-		[[ ! -d "$parent_dir" ]] && die "Directory '${parent_dir}' does not exist."
+		[[ ! -d "$parent_dir" ]] && die "Directory '${parent_dir}' does not exist." "$EXIT_USAGE"
 		OUTPUT_FILE="$(cd "$parent_dir" && pwd)/${OUTPUT_PATH##*/}"
 	fi
 
@@ -170,7 +183,7 @@ require_tools() {
 		for cmd in "${missing[@]}"; do
 			echo "Missing required tool: $cmd" >&2
 		done
-		exit 1
+		exit "$EXIT_MISSING_TOOL"
 	fi
 
 }
@@ -183,14 +196,14 @@ check_release_state() {
 	if [[ -z "$(git -C "$SCRIPT_DIR" tag -l "$TAG")" ]]; then
 		echo "Error: Tag '$TAG' does not exist." >&2
 		echo "Create it first:  git tag $TAG && git push origin $TAG" >&2
-		exit 1
+		exit "$EXIT_FAILURE"
 	fi
 
-	if [[ "$RELEASE_ACTION" == "update" ]] && ! gh release view "$TAG" --repo "$REPO" &>/dev/null; then
+	if [[ "$RELEASE_ACTION" == "update" ]] && ! release_exists; then
 		die "Release '$TAG' does not exist. Use --create instead."
 	fi
 
-	if [[ "$RELEASE_ACTION" == "create" ]] && gh release view "$TAG" --repo "$REPO" &>/dev/null; then
+	if [[ "$RELEASE_ACTION" == "create" ]] && release_exists; then
 		die "Release '$TAG' already exists. Use --update instead."
 	fi
 
