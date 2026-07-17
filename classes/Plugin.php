@@ -219,12 +219,18 @@ final class Plugin {
 	}
 
 	/**
-	 * Enqueues the frontend stylesheet and script.
+	 * Enqueues the frontend stylesheet and scripts.
 	 *
-	 * Loaded on every page, not only the transparent ones: the stylesheet also
-	 * carries two fixes that apply to every sticky header. The script goes in
-	 * the footer without `defer` so it runs during parse and sets the class
-	 * before first paint – deferring it makes the header flash solid on load.
+	 * The stylesheet and the `is-scrolled` script load on every page, not only
+	 * the transparent ones: the stylesheet also carries fixes that apply to
+	 * every sticky header. The admin-bar offset script loads only when an admin
+	 * bar is showing, which is a logged-in concern – the offset means nothing
+	 * without a bar, and keeping the script off public pages also keeps it clear
+	 * of the caching and minification those pages get but logged-in ones do not.
+	 *
+	 * Scripts go in the footer without `defer` so they run during parse and
+	 * settle their state before first paint – deferring makes the header flash
+	 * solid, or hang below the admin bar's band, on load.
 	 *
 	 * @since 0.1.0
 	 *
@@ -251,6 +257,19 @@ final class Plugin {
 			self::asset_version( 'js/header.js' ),
 			[ 'in_footer' => true ],
 		);
+
+		// The admin-bar offset only exists for logged-in users. is_admin_bar_showing()
+		// is decided by the `wp` action, which fires before this hook, so it is
+		// settled here.
+		if ( is_admin_bar_showing() ) {
+			wp_enqueue_script(
+				self::HANDLE . '-admin-bar-offset',
+				plugins_url( 'js/admin-bar-offset.js', self::$plugin_file ),
+				[],
+				self::asset_version( 'js/admin-bar-offset.js' ),
+				[ 'in_footer' => true ],
+			);
+		}
 
 	}
 

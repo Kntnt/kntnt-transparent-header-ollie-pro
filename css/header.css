@@ -27,6 +27,25 @@
   --sticky-full-offset: var(--wp-admin--admin-bar--height, 0px);
 }
 
+/* Sit the header flush at the top once the admin bar has scrolled away. Ollie
+   pins every sticky header down by the admin bar's height
+   (`top: calc(var(--wp-admin--admin-bar--height))`). At 600px and below core
+   makes the admin bar `absolute`, so it scrolls off with the page, but that
+   offset stays 46px – leaving the header resting below an empty band. Ollie
+   ships a reset for exactly this (`@media (max-width: 600px) { … top: 0 }`) but
+   it never applies: its own unscoped base rule outweighs it (0,2,2 vs 0,1,1),
+   and media queries add no specificity. This restores the reset with a selector
+   that outweighs the base rule (0,4,2). The header is `sticky`, so `top: 0` is
+   right at both ends: in the flow at the top it still tucks under the bar, and
+   it sits flush once stuck – no script needed. Transparent headers are excluded
+   because they are `fixed`, not `sticky`, and set their own `top` in their own
+   rule below (where being out of the flow forces a live, script-fed offset). */
+@media (max-width: 600px) {
+  body:not(.wp-admin) header:not(.has-transparent-header):has(> .wp-block-group[data-sticky-on-scroll-up="true"]) {
+    top: 0;
+  }
+}
+
 /* Fade between transparent and solid instead of snapping. Ollie Pro transitions
    only `transform`, so background-color and box-shadow would flip in one frame.
    Override ONLY transition-property, never the `transition` shorthand: the
@@ -41,12 +60,25 @@
    viewport. Ollie's rule makes every sticky header `sticky`, which keeps it in
    the flow and pushes the hero down. That rule and this one have identical
    specificity (0,2,2), so this only wins because the stylesheet is enqueued
-   after the theme's. */
+   after the theme's.
+
+   `top` pins the header below the admin bar. Above 600px core fixes the bar to
+   the viewport, so its height is a constant band, and the fallback resolves it.
+   At 600px and below core makes the bar `absolute`: it scrolls away, yet
+   `--wp-admin--admin-bar--height` stays 46px, so a static value would strand
+   the header below an empty band once the bar has scrolled out. Unlike the
+   solid sticky header, this one is `fixed` – it can't tuck under the bar in the
+   flow, so a static `top: 0` would overlap the bar at the very top instead.
+   js/admin-bar-offset.js (logged-in users only, below 600px only) measures the
+   bar's live bottom edge into `--kntnt-admin-bar-offset`, which collapses to 0
+   as the bar leaves view. The fallback keeps the static height before the
+   script runs, with no JS, and for every logged-out visitor, who has no bar to
+   clear. */
 body:not(.wp-admin) header.has-transparent-header {
   position: fixed;
   left: 0;
   right: 0;
-  top: calc(0px + var(--wp-admin--admin-bar--height, 0px));
+  top: var(--kntnt-admin-bar-offset, var(--wp-admin--admin-bar--height, 0px));
 }
 
 /* The transparent state itself: no background, no shadow, until scrolled. This
