@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin singleton — bootstrap and asset wiring.
+ * Plugin singleton – bootstrap and asset wiring.
  *
  * Holds the absolute path to the main plugin file and registers the hooks that
  * load the stylesheet and script implementing transparent header mode.
@@ -128,7 +128,7 @@ final class Plugin {
 	 *
 	 * Uses get_file_data() rather than get_plugin_data(): the latter lives in
 	 * an admin-only include that is absent on the front end, and it would
-	 * translate the header — triggering a just-in-time textdomain load
+	 * translate the header – triggering a just-in-time textdomain load
 	 * before `init`.
 	 *
 	 * @since 0.1.0
@@ -184,7 +184,7 @@ final class Plugin {
 		// Deliberately outside the theme check below: the plugin is
 		// distributed from GitHub rather than wordpress.org, so this filter is
 		// the only way an install ever learns a new version exists. Staying
-		// updated matters more than staying inert — a site parked on another
+		// updated matters more than staying inert – a site parked on another
 		// theme must not silently rot on an old version until someone switches
 		// back to Ollie.
 		$updater = new Updater();
@@ -209,8 +209,8 @@ final class Plugin {
 	/**
 	 * Reports whether the active theme is Ollie, the theme this plugin extends.
 	 *
-	 * `get_template()` names the parent theme, so Ollie child themes — which
-	 * inherit the very rules this plugin patches — pass just like Ollie itself.
+	 * `get_template()` names the parent theme, so Ollie child themes – which
+	 * inherit the very rules this plugin patches – pass just like Ollie itself.
 	 *
 	 * @since 0.1.0
 	 *
@@ -226,7 +226,7 @@ final class Plugin {
 	 * Loaded on every page, not only the transparent ones: the stylesheet also
 	 * carries two fixes that apply to every sticky header. The script goes in
 	 * the footer without `defer` so it runs during parse and sets the class
-	 * before first paint — deferring it makes the header flash solid on load.
+	 * before first paint – deferring it makes the header flash solid on load.
 	 *
 	 * @since 0.1.0
 	 *
@@ -310,7 +310,7 @@ final class Plugin {
 	 *
 	 * @since 0.1.0
 	 *
-	 * @throws LogicException Always — a singleton must not be unserialised.
+	 * @throws LogicException Always – a singleton must not be unserialised.
 	 *
 	 * @return void
 	 */

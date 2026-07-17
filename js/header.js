@@ -1,8 +1,8 @@
 /**
  * Marks the sticky header as scrolled once the page leaves the top.
  *
- * Ollie has no transparent-header mode — the word appears nowhere in the theme
- * or in Ollie Pro — so this class is the only hook the stylesheet has.
+ * Ollie has no transparent-header mode – the word appears nowhere in the theme
+ * or in Ollie Pro – so this class is the only hook the stylesheet has.
  *
  * It marks the SCROLLED state, not the transparent one, and that direction is
  * the whole point: a class added by script cannot exist in the first paint, so

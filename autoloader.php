@@ -32,7 +32,7 @@ spl_autoload_register(
 	 */
 	static function ( string $class_name ): void {
 
-		// Ignore every class outside the plugin's namespace — other autoloaders
+		// Ignore every class outside the plugin's namespace – other autoloaders
 		// own those, and this one must not answer for them.
 		$prefix = 'Kntnt\\Transparent_Header_Ollie_Pro\\';
 		if ( ! str_starts_with( $class_name, $prefix ) ) {

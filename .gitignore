@@ -1,4 +1,4 @@
-# Composer dependencies — dev tooling only; the plugin ships no runtime
+# Composer dependencies – dev tooling only; the plugin ships no runtime
 # dependency and no vendor/.
 /vendor/
 

@@ -1,5 +1,5 @@
 /**
- * Mechanism only — no colours, no design opinions.
+ * Mechanism only – no colours, no design opinions.
  *
  * Sticky, hide-on-scroll-down and show-on-scroll-up are the theme's and Ollie
  * Pro's job. This file adds what they have no concept of, plus two fixes.
@@ -11,7 +11,7 @@
  * The transparent state is the ABSENCE of `is-scrolled`, never a class of its
  * own. That is deliberate: a JavaScript-applied class cannot exist at first
  * paint, so making transparency the exception meant every page load rendered the
- * solid header first and then animated it away — a visible flash. Target
+ * solid header first and then animated it away – a visible flash. Target
  * `:not(.is-scrolled)` for the top state and it is correct before any script runs.
  */
 
@@ -47,10 +47,10 @@ body:not(.wp-admin) header.has-transparent-header {
 }
 
 /* The transparent state itself: no background, no shadow, until scrolled. This is
-   the default, so it is already correct in the first paint — no script involved.
+   the default, so it is already correct in the first paint – no script involved.
    The solid state needs no rule at all: once this stops matching, the block's own
    editor-set background simply reappears. That is why this file ships no colours.
-   `!important` is unavoidable — core emits the block's preset background as
+   `!important` is unavoidable – core emits the block's preset background as
    `.has-<slug>-background-color { background-color: … !important }`.
 
    An open disclosure inside the header (a mega menu, a mobile menu) drops the

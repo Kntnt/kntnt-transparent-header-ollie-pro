@@ -39,7 +39,7 @@
 			Deliberate deviation 3: namespaces over global function prefixes.
 			PHP code lives inside \Kntnt\Transparent_Header_Ollie_Pro rather than
 			under a kntnt_ function-name prefix. The prefix is still used for
-			identifiers that live in a global registry — the two bootstrap
+			identifiers that live in a global registry – the two bootstrap
 			functions in the main plugin file, which cannot be namespaced.
 		-->
 		<exclude name="WordPress.NamingConventions.PrefixAllGlobals"/>
@@ -53,17 +53,17 @@
 
 		<!--
 			The standard forbids vertical alignment of = and => across lines. Two
-			separate sniffs enforce the opposite — one for assignments, one for
-			the double arrows inside a multi-line array — so both are excluded and
+			separate sniffs enforce the opposite – one for assignments, one for
+			the double arrows inside a multi-line array – so both are excluded and
 			the no-alignment rule wins.
 
 			Excluding is the strongest available move, not a satisfying one: no
 			installed sniff can *enforce* single-space. WordPress.Arrays.
 			MultipleStatementAlignment only ever demands alignment, and its
-			maxColumn property does not invert it — set low, every item fails the
+			maxColumn property does not invert it – set low, every item fails the
 			`$index_end_cols` filter and the sniff returns without checking at all.
 			So aligned `=>` passes this gate silently; only review catches it.
-			Enforcement needs a custom sniff — Kntnt/kntnt-code-skills#38.
+			Enforcement needs a custom sniff – Kntnt/kntnt-code-skills#38.
 		-->
 		<exclude name="Generic.Formatting.MultipleStatementAlignment"/>
 		<exclude name="WordPress.Arrays.MultipleStatementAlignment"/>
@@ -87,7 +87,7 @@
 
 	</rule>
 
-	<!-- Require short array syntax ([ ]) — never array(). -->
+	<!-- Require short array syntax ([ ]) – never array(). -->
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
 
 	<!--
@@ -95,12 +95,12 @@
 		limit on a code line (agents.d/coding-standard/php.md, "Line width"): a long
 		line beats breaking arguments apart to satisfy a column count.
 
-		The standard's one width rule — a comment on its own line never passes
-		column 80 — is NOT enforced here, because it cannot be. LineLength carries a
+		The standard's one width rule – a comment on its own line never passes
+		column 80 – is NOT enforced here, because it cannot be. LineLength carries a
 		single limit for every line and no shipped sniff measures comments
 		separately; the standard's trailing-comment exception is doubly beyond it,
 		since `$x = f(); // note` is one line that is both code and comment.
-		Enforcing it needs a custom sniff — Kntnt/kntnt-code-skills#37. Until then
+		Enforcing it needs a custom sniff – Kntnt/kntnt-code-skills#37. Until then
 		comment width is a review responsibility, not a gate.
 	-->
 
@@ -113,10 +113,10 @@
 
 	<!--
 		No testVersion here. It belongs to PHPCompatibility, which this project
-		does not install — and would not benefit from: its last stable (9.3.5,
+		does not install – and would not benefit from: its last stable (9.3.5,
 		2019) has no knowledge of PHP 8.0 or later, so it reports nothing on this
 		codebase at any testVersion and only reads like a gate. The `Requires PHP`
-		floor is enforced by PHPStan's `phpVersion` instead — see
+		floor is enforced by PHPStan's `phpVersion` instead – see
 		phpstan.neon.dist.
 	-->
 

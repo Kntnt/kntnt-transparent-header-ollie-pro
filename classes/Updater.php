@@ -6,7 +6,7 @@
  * plugin's GitHub repository and present them in the admin UI. The target
  * repository is derived from the Plugin URI header, so this class is pointed at
  * Kntnt/kntnt-transparent-header-ollie-pro without a hard-coded slug, and the
- * release asset is identified by content type rather than name — the zip built
+ * release asset is identified by content type rather than name – the zip built
  * by build-release-zip.sh carries no version segment.
  *
  * @package Kntnt\Transparent_Header_Ollie_Pro
@@ -71,7 +71,7 @@ final class Updater {
 	 */
 	public function check_for_updates( mixed $transient ): mixed {
 
-		// Pass non-object payloads straight through — only stdClass values have
+		// Pass non-object payloads straight through – only stdClass values have
 		// the structure this updater expects to mutate.
 		if ( ! ( $transient instanceof stdClass ) ) {
 			return $transient;
@@ -174,7 +174,7 @@ final class Updater {
 	 * Locates the first ZIP asset URL in a release's asset list.
 	 *
 	 * Returns null when no ZIP asset is attached, or when the asset's download
-	 * host is not one of ALLOWED_HOSTS — the Updater then skips advertising
+	 * host is not one of ALLOWED_HOSTS – the Updater then skips advertising
 	 * the update rather than offering a broken or untrusted package URL. The
 	 * match is by content type, not filename, so the version-less asset name
 	 * stays compatible with self-update.
