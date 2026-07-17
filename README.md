@@ -26,7 +26,9 @@ Both requirements are enforced, and neither nags you:
 
 ## Installation
 
-Download the plugin, upload it under *Plugins → Add New → Upload Plugin*, and activate. Then follow *Step by step* below to build the header.
+Download `kntnt-transparent-header-ollie-pro.zip` from the [latest release](https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/releases/latest), upload it under *Plugins → Add New → Upload Plugin*, and activate. Then follow *Step by step* below to build the header.
+
+The plugin is not on wordpress.org, but it updates itself from its GitHub releases: new versions show up under *Dashboard → Updates* and install with one click, exactly like any other plugin. It asks GitHub at most once every six hours.
 
 ## How it works
 

@@ -68,6 +68,17 @@ final class Plugin {
 	private static string $plugin_file = '';
 
 	/**
+	 * Cached return value of get_file_data().
+	 *
+	 * Populated lazily on the first call to get_plugin_data().
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var array<string, string>|null
+	 */
+	private static ?array $plugin_data = null;
+
+	/**
 	 * Returns (and on the first call, creates) the singleton instance.
 	 *
 	 * The first call must pass the absolute path to the main plugin file so the
@@ -96,16 +107,72 @@ final class Plugin {
 	}
 
 	/**
+	 * Returns the absolute path to the main plugin file.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return string Absolute path to the main plugin file.
+	 */
+	public static function get_plugin_file(): string {
+		return self::$plugin_file;
+	}
+
+	/**
+	 * Returns the parsed plugin header, cached after the first call.
+	 *
+	 * Uses get_file_data() rather than get_plugin_data(): the latter lives in an
+	 * admin-only include that is absent on the front end, and it would translate
+	 * the header — triggering a just-in-time textdomain load before `init`.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return array<string, string> Header fields, each '' when absent.
+	 */
+	public static function get_plugin_data(): array {
+
+		// Return the cached result to avoid repeated file reads.
+		if ( self::$plugin_data !== null ) {
+			return self::$plugin_data;
+		}
+
+		self::$plugin_data = get_file_data(
+			self::$plugin_file,
+			[
+				'Name' => 'Plugin Name',
+				'PluginURI' => 'Plugin URI',
+				'Version' => 'Version',
+				'RequiresWP' => 'Requires at least',
+				'RequiresPHP' => 'Requires PHP',
+			],
+		);
+
+		return self::$plugin_data;
+
+	}
+
+	/**
 	 * Registers the plugin's WordPress hooks.
 	 *
 	 * Enqueues at priority 20 so the theme's stylesheet is already registered and
 	 * can be depended on; plugins hook earlier than themes, so the default
 	 * priority would put this stylesheet first and silently lose the cascade.
 	 *
+	 * The Updater is wired here because GitHub-hosted self-updates are core
+	 * infrastructure rather than part of the header feature: the plugin is
+	 * distributed from its GitHub releases, not wordpress.org, so without it an
+	 * install would never learn that a new version exists.
+	 *
 	 * @since 1.0.0
 	 */
 	private function __construct() {
+
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ], 20 );
+
+		// Wire the GitHub-release update checker into the WordPress update
+		// transient so installs can self-update from the project's releases.
+		$updater = new Updater();
+		add_filter( 'pre_set_site_transient_update_plugins', [ $updater, 'check_for_updates' ] );
+
 	}
 
 	/**
@@ -176,13 +243,7 @@ final class Plugin {
 	 * @return string The version string, or '' when the header is unreadable.
 	 */
 	private static function get_version(): string {
-
-		// Translation is disabled to avoid triggering a just-in-time textdomain
-		// load before `init`.
-		$data = get_file_data( self::$plugin_file, [ 'Version' => 'Version' ] );
-
-		return $data['Version'] ?? '';
-
+		return self::get_plugin_data()['Version'];
 	}
 
 	/**

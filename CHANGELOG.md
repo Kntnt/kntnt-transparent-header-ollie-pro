@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 
 ### Added
 
+- Self-updating from the project's GitHub releases: the plugin now appears under *Dashboard → Updates* like any other, checking the repository named by its own `Plugin URI` header at most once every six hours (filterable via `kntnt_transparent_header_ollie_pro_update_check_ttl`). A release is only offered when it carries a ZIP asset served from GitHub's own download hosts, so a tampered header cannot redirect the update installer at an attacker's package.
+- `build-release-zip.sh`, which builds a release zip containing only runtime files, and can create or update the GitHub release and upload the asset. The asset name carries no version segment, keeping the `latest/download` URL stable.
 - `Requires Plugins: ollie-pro` header, so WordPress refuses to activate the plugin without Ollie Pro and deactivates it if Ollie Pro goes away.
 - A silent guard that aborts the bootstrap when the active theme is not Ollie (or one of its child themes). Under a foreign theme the plugin loads no autoloader, no class and no hooks. It stays quiet on purpose: Ollie Pro already reports a wrong theme, and a second notice would only repeat it.
 - A PHP version guard in the main plugin file, as a second line of defence for installs that load the plugin outside the normal activation path.
