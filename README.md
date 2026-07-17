@@ -3,12 +3,35 @@
 [![Requires WordPress: 6.7+](https://img.shields.io/badge/WordPress-6.7+-blue.svg)](https://wordpress.org)
 [![Requires PHP: 8.5+](https://img.shields.io/badge/PHP-8.5+-blue.svg)](https://php.net)
 [![License: GPL v2+](https://img.shields.io/badge/License-GPLv2+-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
+[![Latest release](https://img.shields.io/github/v/release/Kntnt/kntnt-transparent-header-ollie-pro)](https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/releases/latest)
 
-Gives Ollie's sticky header a transparent-over-hero mode: transparent at the top of the page, fading to your own background colour once the visitor scrolls.
+Lets Ollie's sticky header lie transparently over your hero image, then fade to its normal colour as the visitor scrolls.
 
-Sticky positioning and hide-on-scroll-down belong to the **Ollie** theme and **Ollie Pro** — this plugin only adds what they have no concept of, and works around two of their defects.
+## Description
 
-No settings page. No CSS to write. You add one class in the Site Editor.
+You have built a site with the **Ollie** theme and **Ollie Pro**, you have a hero image at the top of the page, and you want the header to float over it — no bar of colour cutting across the picture — and then turn solid once the visitor scrolls down. This plugin does exactly that, and nothing else.
+
+It is for anyone running Ollie and Ollie Pro who wants that effect without writing the CSS themselves. Install it, tick one box in the Site Editor, and you are done.
+
+### Key features
+
+- **Transparent over the hero.** At the top of the page the header has no background and no shadow. Your hero image starts at the very top of the screen.
+- **Fades to your own colour.** Scroll past 20 pixels and the header fades back to the background colour *you* chose in the Site Editor. The plugin ships no colours of its own and never overrides your design.
+- **Solid behind open menus.** Open a mega menu or the mobile menu and the header turns solid immediately, so the panel has a backdrop instead of floating over the picture.
+- **No flash on page load.** The header is transparent from the very first frame, not solid-then-corrected.
+- **Fixes two Ollie Pro bugs** along the way (see [What the plugin actually does](#what-the-plugin-actually-does)).
+- **No settings page.** One class in the Site Editor is the whole configuration.
+- **Updates itself** from GitHub, like any plugin from wordpress.org.
+
+### The problem
+
+Ollie and Ollie Pro give you a sticky header that hides when you scroll down and comes back when you scroll up. What they have no concept of is a *transparent* header — the word appears nowhere in either of them. So the header always carries its background colour, and a hero image can never reach the top of the screen; there is always a band of colour above it.
+
+Doing it by hand is harder than it looks. The header has to leave the document flow or it pushes the hero down; the rule that does that has to beat the theme's own rule at identical specificity; the fade has to be added without touching a property Ollie Pro is already animating, or the header stops sliding and starts snapping. Get any of it slightly wrong and it fails silently.
+
+### How this plugin helps
+
+It does that work once, correctly, as a mechanism with no design opinions. You keep choosing the colours; the plugin only decides *when* the header is transparent and when it is not.
 
 ## Requirements
 
@@ -21,26 +44,21 @@ No settings page. No CSS to write. You add one class in the Site Editor.
 
 Both requirements are enforced, and neither nags you:
 
-- **Ollie Pro** is declared in the `Requires Plugins` header, so WordPress will not activate this plugin without it, and deactivates this one if you deactivate Ollie Pro.
-- **The Ollie theme** is checked at load. Under any other theme the plugin loads no styles or scripts and touches nothing on your pages, and says nothing about it either — Ollie Pro already reports a wrong theme, and there is no point saying it twice. It keeps checking for its own updates, so a site that switches away from Ollie and back is not stranded on an old version.
+- **Ollie Pro** is declared in the `Requires Plugins` header, so WordPress will not let you activate this plugin without it, and deactivates this one if you deactivate Ollie Pro.
+- **The Ollie theme** is checked when the plugin loads. Under any other theme it loads no styles or scripts and touches nothing on your pages, and says nothing about it either — Ollie Pro already tells you when the theme is wrong, and there is no point saying it twice. It does keep checking for its own updates, so a site that switches away from Ollie and back is not stranded on an old version.
 
 ## Installation
 
-Download `kntnt-transparent-header-ollie-pro.zip` from the [latest release](https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/releases/latest), upload it under *Plugins → Add New → Upload Plugin*, and activate. Then follow *Step by step* below to build the header.
+1. Download **`kntnt-transparent-header-ollie-pro.zip`** from the [latest release](https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/releases/latest/download/kntnt-transparent-header-ollie-pro.zip).
+2. In WordPress, go to **Plugins → Add New → Upload Plugin**.
+3. Choose the file you downloaded and click **Install Now**.
+4. Click **Activate**.
 
-The plugin is not on wordpress.org, but it updates itself from its GitHub releases: new versions show up under *Dashboard → Updates* and install with one click, exactly like any other plugin. It asks GitHub at most once every six hours.
+That is the normal WordPress upload route — nothing special. The plugin is not on wordpress.org, but it updates itself from its GitHub releases: new versions appear under **Dashboard → Updates** and install with one click, exactly like any other plugin.
 
-## How it works
+## Usage
 
-The plugin owns the *mechanism* and ships **no colours**:
-
-- At the top of the page the header has no background and no shadow.
-- Once scrolled past 20px, the plugin adds `is-scrolled` to the header group, its own rule stops matching, and **your** background colour — the one you picked in the editor — simply reappears.
-- The same happens while a menu inside the header is open (anything with `aria-expanded="true"`), so a mega menu or mobile menu hanging off the header gets a backdrop instead of floating over the hero.
-
-So the solid colour is whatever you set on the group block. The plugin never guesses it and never overrides it.
-
-## Step by step
+Three steps in the Site Editor. No CSS required.
 
 ### 1. Build the header template part
 
@@ -75,7 +93,31 @@ site-header has-transparent-header
 
 That's the whole configuration. The hero should be the first block in `main`, with no top margin — the header lays over it.
 
-### 4. Colour the header's contents against the hero
+### Two things that will silently break it
+
+- **Don't wrap the template part in a Group**, as above. It is the single most common way to lose the sticky header.
+- **Don't set a hover colour on the header group.** Ollie Pro writes the `transition` shorthand for both `hoverTextColor` and `stickyOnScrollUp` at equal specificity; the hover rule wins on source order and kills the slide. Put hover colours on the links inside the header instead.
+
+If your logo or links are hard to read against the hero, that is expected — they keep their normal colour. See [Colouring the header's contents](#colouring-the-headers-contents-against-the-hero) below.
+
+## Questions, bugs, and feature requests
+
+Have a usage question or something to discuss? Please use [Discussions](https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/discussions).
+
+Found a bug or want to request a feature? Please [open an issue](https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/issues). Search the existing issues first to avoid duplicates.
+
+## Extending
+
+Everything below is for developers who want to push the effect further. The plugin has no filters and no API — it is two CSS classes and a stylesheet, so you extend it by writing CSS against those classes, in **Styles → Additional CSS** in the Site Editor or in a child theme's `theme.json` under `styles.css`.
+
+The public contract is exactly two classes:
+
+| Class | Who sets it |
+|---|---|
+| `has-transparent-header` | You, on the Template Part block |
+| `is-scrolled` | The plugin, on the header group, once scrolled past 20px |
+
+### Colouring the header's contents against the hero
 
 Logo and links keep their normal colour, which may be unreadable over a hero image. The transparent state is the **absence** of `is-scrolled`, so target that:
 
@@ -86,21 +128,9 @@ header.has-transparent-header > .wp-block-group:not(.is-scrolled) :where(a, svg)
 }
 ```
 
-Put it in **Styles → Additional CSS** in the Site Editor, or in a child theme's `theme.json` under `styles.css`.
-
 `:where()` contributes no specificity, so the selector stays low enough to be easy to override but still beats the theme's generated link-colour rule.
 
-## Why the transparent state has no class of its own
-
-You may expect an `is-transparent` class. There isn't one, deliberately.
-
-A class added by JavaScript cannot exist in the first paint. If transparency depended on one, every page load would render the solid header first, then add the class, then animate it away — a visible flash of colour. Measured on a real site: ~90ms of solid background followed by a 300ms fade.
-
-Making the top state the **default** — the state that needs no class and no script — means it is already correct in the first paint. That is why the selector is `:not(.is-scrolled)` and not `.is-transparent`.
-
-The reverse case (loading a page that is already scrolled) renders transparent for a moment and then fades to solid. That is far less jarring, and scroll restoration happens after paint anyway.
-
-## Advanced: partial opacity
+### Partial opacity
 
 The plugin's default is all-or-nothing: fully transparent at the top, your colour when scrolled. That covers almost every design. If you need something in between, write it yourself — the two states are plain CSS selectors.
 
@@ -127,7 +157,7 @@ You can equally use literal colours, including 8-digit hex: `#fff20033` at the t
 
 **Never write the `transition` shorthand on the header group.** Ollie Pro sets `transition: transform …` on it at specificity (0,2,0). Any shorthand that also lands there resets the transform transition and the header will **snap instead of slide**. Add properties with `transition-property` only — the plugin already does this, so normally you need not touch it at all.
 
-## What the plugin actually does
+### What the plugin actually does
 
 Three CSS rules and one small script.
 
@@ -138,13 +168,23 @@ Three CSS rules and one small script.
 | `position: fixed` on `.has-transparent-header` | Ollie's rule makes every sticky header `sticky`, i.e. in the flow, which pushes the hero down. Both rules have identical specificity (0,2,2), so this only wins because the stylesheet is enqueued **after** the theme's — hence priority 20 and a dependency on the `ollie` handle. |
 | `is-scrolled` toggle | The only thing that genuinely needs JavaScript. |
 
-## Known limits
+### Why the transparent state has no class of its own
+
+You may expect an `is-transparent` class. There isn't one, deliberately.
+
+A class added by JavaScript cannot exist in the first paint. If transparency depended on one, every page load would render the solid header first, then add the class, then animate it away — a visible flash of colour. Measured on a real site: ~90ms of solid background followed by a 300ms fade.
+
+Making the top state the **default** — the state that needs no class and no script — means it is already correct in the first paint. That is why the selector is `:not(.is-scrolled)` and not `.is-transparent`.
+
+The reverse case (loading a page that is already scrolled) renders transparent for a moment and then fades to solid. That is far less jarring, and scroll restoration happens after paint anyway.
+
+### Known limits
 
 - **The hide threshold is 100px and hardcoded** in Ollie Pro (`SCROLL_TOP_THRESHOLD`, no filter). Changing it means not using "Hide on Scroll Down" and writing hide/show yourself.
+- **The solid threshold is 20px and hardcoded** in this plugin (`SOLID_THRESHOLD` in `js/header.js`). There is no filter for it; change it in a fork if you must.
 - **The header is in the flow when solid** (`position: sticky`) but **out of the flow when transparent** (`position: fixed`). That is deliberate — it cannot lie over the hero otherwise — and it is why no spacer is needed.
-- **Don't set a hover colour on the header group.** Ollie Pro writes the `transition` shorthand for both `hoverTextColor` and `stickyOnScrollUp` at equal specificity; the hover rule wins on source order and kills the slide. Put hover colours on the links instead.
 
-## Troubleshooting
+### Troubleshooting
 
 Paste in the browser console on a hero page:
 
@@ -160,3 +200,110 @@ console.log({
 - `wrapper` **must** be `wp-site-blocks`. If it says `wp-block-group` you have a wrapper — see step 2.
 - `headerPos` should be `fixed` on a transparent header, `sticky` otherwise.
 - `transition` must contain `transform 0.3s …` **plus** `background-color`. If you see only `color 0.2s`, something set a hover colour on the group.
+
+## Development
+
+This section assumes nothing beyond a terminal. If you have never contributed to a GitHub project before, follow it top to bottom.
+
+### What you need
+
+- **Git** — [installation guide](https://git-scm.com/downloads).
+- **PHP 8.5 or later** — check with `php -v`.
+- **Composer** — [installation guide](https://getcomposer.org/download/). It installs the development tools; the plugin itself has no dependencies and ships none.
+- A **GitHub account**, and [`gh`](https://cli.github.com/) if you want to publish releases.
+
+### Getting the code
+
+Click **Fork** at the top of [the repository](https://github.com/Kntnt/kntnt-transparent-header-ollie-pro) to get your own copy, then replace `YOUR-USERNAME` below:
+
+```bash
+git clone https://github.com/YOUR-USERNAME/kntnt-transparent-header-ollie-pro.git
+cd kntnt-transparent-header-ollie-pro
+composer install
+```
+
+`composer install` creates a `vendor/` directory with the coding-standard tools. It is not shipped and not committed — the plugin loads its own classes through the hand-written `autoloader.php`, so the plugin works with no `vendor/` at all.
+
+To run your copy on a real site, symlink or copy the directory into `wp-content/plugins/` of a WordPress install using Ollie and Ollie Pro.
+
+### Making a change
+
+```bash
+git checkout -b my-change      # never work directly on main
+# … edit files …
+composer phpcs                 # must report 0 errors
+git add -A
+git commit -m "Describe what changed and why"
+git push origin my-change
+```
+
+Then open a pull request: GitHub shows a **Compare & pull request** button after the push, or use `gh pr create`. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for what is likely to be merged.
+
+### Quality gates
+
+```bash
+composer phpcs     # WordPress Coding Standards, with the documented deviations
+composer phpcbf    # fixes most violations automatically
+shellcheck build-release-zip.sh
+```
+
+`composer phpcs` must report **0 errors** before you open a pull request. Two warnings about long lines are expected and unavoidable: the plugin header's `Description:` must be a single line, and a translators' string cannot be split.
+
+The ruleset in `phpcs.xml.dist` deliberately switches off several sniffs where the WordPress Coding Standards contradict this project's standard. Do not "fix" the code toward upstream WP-CS, and note that **`phpcbf` will not revert those deviations** — they are excluded, not tolerated.
+
+There is no test suite. The plugin's only logic is deciding when to enqueue two files; there is nothing a unit test could meaningfully constrain that the coding-standard gate and a browser do not.
+
+### Building a release ZIP locally
+
+```bash
+./build-release-zip.sh                       # → dist/kntnt-transparent-header-ollie-pro.zip
+./build-release-zip.sh --output ~/Desktop    # → somewhere else
+./build-release-zip.sh --help                # every option
+```
+
+The script stages the tree in a temporary directory, deletes everything that is not a runtime file, and zips the rest. Your working tree is untouched. There is no compile or bundle step — the plugin ships the PHP, CSS and JS exactly as they are in the repository.
+
+If you add a new runtime file or directory, add it to the `KEEP` array in `build-release-zip.sh`, or it will work locally and be missing from the release.
+
+### Releasing
+
+Requires push access and `gh`. The `Version:` header in the main plugin file must already match the tag.
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+./build-release-zip.sh --tag v0.1.0 --create   # opens the release and uploads the ZIP
+```
+
+`--create` takes the release notes from the matching section of [`CHANGELOG.md`](CHANGELOG.md). Use `--update` to replace the asset on a release that already exists. The asset name deliberately carries no version number, which is what keeps the `latest/download` link above permanent.
+
+### Project layout
+
+```
+kntnt-transparent-header-ollie-pro.php   Plugin header, PHP guard, bootstrap
+autoloader.php                           PSR-4 → classes/
+classes/Plugin.php                       Singleton; theme check and asset wiring
+classes/Updater.php                      Self-update from GitHub releases
+css/header.css                           The three rules. Ships no colours
+js/header.js                             Toggles is-scrolled
+languages/                               Translation template
+agents.d/coding-standard/                The coding standard, by language
+AGENTS.md                                Entry point for AI assistants; also
+                                         the fastest orientation for humans
+```
+
+[`AGENTS.md`](AGENTS.md) holds the non-obvious facts about this project — the decisions that look like mistakes until you know why. Read it before changing anything; it is written for AI coding assistants but is the best short briefing for a human contributor too.
+
+## How you can contribute
+
+Contributions are welcome, small or large. Before you start, read [`CONTRIBUTING.md`](CONTRIBUTING.md) — it covers which kinds of change are likely to be merged and how inbound licensing works.
+
+## License
+
+Licensed under [GPL-2.0-or-later](LICENSE). The full licence text is in [`LICENSE`](LICENSE).
+
+## Changelog
+
+Release notes for each version live in [`CHANGELOG.md`](CHANGELOG.md).
+
+The project follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Versioning](https://semver.org/).
