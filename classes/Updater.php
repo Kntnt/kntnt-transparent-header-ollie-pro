@@ -68,7 +68,7 @@ final class Updater {
 	 * @since 0.1.0
 	 *
 	 * @param mixed $transient The update transient passed by the filter.
-	 *                         Normally a stdClass; possibly false during a reset.
+	 *                         Normally a stdClass; possibly false on reset.
 	 * @return mixed The (potentially modified) transient.
 	 */
 	public function check_for_updates( mixed $transient ): mixed {
@@ -145,7 +145,7 @@ final class Updater {
 	 */
 	private function get_latest_github_release( string $repo ): ?array {
 
-		// Serve from the site transient when a previously decoded response exists.
+		// Serve from the site transient when a decoded response already exists.
 		$cached = get_site_transient( self::CACHE_KEY );
 		if ( is_array( $cached ) ) {
 			return $cached;
@@ -157,7 +157,7 @@ final class Updater {
 			return null;
 		}
 
-		// Decode as an associative array so static analysis can reason about it.
+		// Decode as an associative array so static analysis can read it.
 		$decoded = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( ! is_array( $decoded ) || ! isset( $decoded['tag_name'], $decoded['assets'] ) ) {
 			return null;
@@ -176,15 +176,15 @@ final class Updater {
 	 * Locates the first ZIP asset URL in a release's asset list.
 	 *
 	 * Returns null when no ZIP asset is attached, or when the asset's download
-	 * host is not one of ALLOWED_HOSTS — the Updater then skips advertising the
-	 * update rather than offering a broken or untrusted package URL. The match is
-	 * by content type, not filename, so the version-less asset name stays
-	 * compatible with self-update.
+	 * host is not one of ALLOWED_HOSTS — the Updater then skips advertising
+	 * the update rather than offering a broken or untrusted package URL. The
+	 * match is by content type, not filename, so the version-less asset name
+	 * stays compatible with self-update.
 	 *
 	 * @since 0.1.0
 	 *
 	 * @param array<mixed> $release Decoded GitHub release data.
-	 * @return string|null The download URL of the first usable ZIP asset, or null.
+	 * @return string|null Download URL of the first usable ZIP asset, or null.
 	 */
 	private function find_zip_asset_url( array $release ): ?string {
 
@@ -199,7 +199,7 @@ final class Updater {
 				continue;
 			}
 
-			// Reject an asset served from anywhere but GitHub's own download hosts.
+			// Reject an asset served from anywhere but GitHub's own hosts.
 			$url = $asset['browser_download_url'] ?? null;
 			$host = is_string( $url ) ? wp_parse_url( $url, PHP_URL_HOST ) : null;
 			if ( is_string( $host ) && in_array( $host, self::ALLOWED_HOSTS, true ) ) {

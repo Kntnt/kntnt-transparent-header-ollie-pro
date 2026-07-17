@@ -43,8 +43,9 @@ spl_autoload_register(
 		$relative = substr( $class_name, strlen( $prefix ) );
 		$path = __DIR__ . '/classes/' . str_replace( '\\', '/', $relative ) . '.php';
 
-		// A missing file means a typo or a stale reference; let PHP raise its own
-		// "class not found" error rather than masking it with a warning here.
+		// A missing file means a typo or a stale reference; let PHP raise
+		// its own "class not found" error rather than masking it with a
+		// warning here.
 		if ( is_readable( $path ) ) {
 			require_once $path;
 		}

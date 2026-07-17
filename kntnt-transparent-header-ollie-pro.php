@@ -28,10 +28,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Guards against running on a PHP version older than the 8.5 floor.
  *
- * The plugin header already makes WordPress block activation on older installs.
- * This is a second line of defence for environments that load the plugin outside
- * the normal activation path: it shows an admin notice and deactivates the
- * plugin so it never reaches code that would fatally error.
+ * The plugin header already makes WordPress block activation on older
+ * installs. This is a second line of defence for environments that load the
+ * plugin outside the normal activation path: it shows an admin notice and
+ * deactivates the plugin so it never reaches code that would fatally error.
  *
  * @since 0.1.0
  *
@@ -49,7 +49,7 @@ function kntnt_transparent_header_ollie_pro_requirements_check(): bool {
 		'admin_notices',
 		static function (): void {
 			$message = sprintf(
-				/* translators: 1: required PHP version, 2: current PHP version. */
+				/* translators: 1: required PHP version, 2: current version. */
 				__( 'Kntnt Transparent Header for Ollie Pro requires PHP %1$s or later. This server runs PHP %2$s. The plugin has been deactivated.', 'kntnt-transparent-header-ollie-pro' ),
 				'8.5',
 				PHP_VERSION,
@@ -70,7 +70,7 @@ function kntnt_transparent_header_ollie_pro_requirements_check(): bool {
 
 }
 
-// Abort before loading anything else when the runtime cannot support the plugin.
+// Abort before loading anything else if the runtime cannot support the plugin.
 if ( ! kntnt_transparent_header_ollie_pro_requirements_check() ) {
 	return;
 }

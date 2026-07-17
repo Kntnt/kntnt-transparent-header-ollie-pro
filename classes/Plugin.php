@@ -37,11 +37,11 @@ final class Plugin {
 	private const HANDLE = 'kntnt-transparent-header-ollie-pro';
 
 	/**
-	 * Ollie's own stylesheet handle, derived from the theme's `Ollie` namespace.
+	 * Ollie's own stylesheet handle, from the theme's `Ollie` namespace.
 	 *
 	 * The plugin stylesheet must load after it: the transparent-mode rule and
-	 * Ollie's sticky rule have identical specificity, so source order decides the
-	 * winner.
+	 * Ollie's sticky rule have identical specificity, so source order decides
+	 * the winner.
 	 *
 	 * @since 0.1.0
 	 *
@@ -50,7 +50,7 @@ final class Plugin {
 	private const THEME_HANDLE = 'ollie';
 
 	/**
-	 * Ollie's template directory, i.e. the slug of the theme this plugin extends.
+	 * Ollie's template directory: the slug of the theme this plugin extends.
 	 *
 	 * Equal to THEME_HANDLE by coincidence, not by rule: one names a registered
 	 * stylesheet, the other a directory on disk, and either could change alone.
@@ -93,9 +93,9 @@ final class Plugin {
 	/**
 	 * Returns (and on the first call, creates) the singleton instance.
 	 *
-	 * The first call must pass the absolute path to the main plugin file so the
-	 * asset helpers can resolve URLs without globals. Subsequent calls ignore the
-	 * argument and return the existing instance.
+	 * The first call must pass the absolute path to the main plugin file so
+	 * the asset helpers can resolve URLs without globals. Subsequent calls
+	 * ignore the argument and return the existing instance.
 	 *
 	 * @since 0.1.0
 	 *
@@ -132,9 +132,10 @@ final class Plugin {
 	/**
 	 * Returns the parsed plugin header, cached after the first call.
 	 *
-	 * Uses get_file_data() rather than get_plugin_data(): the latter lives in an
-	 * admin-only include that is absent on the front end, and it would translate
-	 * the header — triggering a just-in-time textdomain load before `init`.
+	 * Uses get_file_data() rather than get_plugin_data(): the latter lives in
+	 * an admin-only include that is absent on the front end, and it would
+	 * translate the header — triggering a just-in-time textdomain load
+	 * before `init`.
 	 *
 	 * @since 0.1.0
 	 *
@@ -174,25 +175,27 @@ final class Plugin {
 
 		// Wire the GitHub-release update checker into the WordPress update
 		// transient so installs can self-update from the project's releases.
-		// Deliberately outside the theme check below: the plugin is distributed
-		// from GitHub rather than wordpress.org, so this filter is the only way an
-		// install ever learns a new version exists. Staying updated matters more
-		// than staying inert — a site parked on another theme must not silently
-		// rot on an old version until someone switches back to Ollie.
+		// Deliberately outside the theme check below: the plugin is
+		// distributed from GitHub rather than wordpress.org, so this filter is
+		// the only way an install ever learns a new version exists. Staying
+		// updated matters more than staying inert — a site parked on another
+		// theme must not silently rot on an old version until someone switches
+		// back to Ollie.
 		$updater = new Updater();
 		add_filter( 'pre_set_site_transient_update_plugins', [ $updater, 'check_for_updates' ] );
 
-		// Everything below extends rules only Ollie and Ollie Pro ship, so under
-		// any other theme there is nothing to act on. Silent by design: Ollie Pro
-		// is a hard dependency and already reports a wrong theme, so a second
-		// notice would only repeat it.
+		// Everything below extends rules only Ollie and Ollie Pro ship, so
+		// under any other theme there is nothing to act on. Silent by design:
+		// Ollie Pro is a hard dependency and already reports a wrong theme, so
+		// a second notice would only repeat it.
 		if ( ! self::is_ollie_active() ) {
 			return;
 		}
 
-		// Enqueue at priority 20 so the theme's stylesheet is already registered
-		// and can be depended on; plugins hook earlier than themes, so the default
-		// priority would put this stylesheet first and silently lose the cascade.
+		// Enqueue at priority 20 so the theme's stylesheet is already
+		// registered and can be depended on; plugins hook earlier than themes,
+		// so the default priority would put this stylesheet first and silently
+		// lose the cascade.
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ], 20 );
 
 	}
@@ -215,9 +218,9 @@ final class Plugin {
 	 * Enqueues the frontend stylesheet and script.
 	 *
 	 * Loaded on every page, not only the transparent ones: the stylesheet also
-	 * carries two fixes that apply to every sticky header. The script goes in the
-	 * footer without `defer` so it runs during parse and sets the class before
-	 * first paint — deferring it makes the header flash solid on load.
+	 * carries two fixes that apply to every sticky header. The script goes in
+	 * the footer without `defer` so it runs during parse and sets the class
+	 * before first paint — deferring it makes the header flash solid on load.
 	 *
 	 * @since 0.1.0
 	 *
@@ -225,8 +228,9 @@ final class Plugin {
 	 */
 	public function enqueue_assets(): void {
 
-		// Depending on a handle that was never registered makes WordPress drop the
-		// stylesheet entirely, so only claim the dependency when it really exists.
+		// Depending on a handle that was never registered makes WordPress drop
+		// the stylesheet entirely, so only claim the dependency when it really
+		// exists.
 		$deps = wp_style_is( self::THEME_HANDLE, 'registered' ) ? [ self::THEME_HANDLE ] : [];
 
 		wp_enqueue_style(
@@ -254,13 +258,13 @@ final class Plugin {
 	 *
 	 * @since 0.1.0
 	 *
-	 * @param string $relative_path Path to the asset, relative to the plugin root.
+	 * @param string $relative_path Asset path, relative to the plugin root.
 	 * @return string
 	 */
 	private static function asset_version( string $relative_path ): string {
 
-		// A readable file dates itself; anything else falls back to the header's
-		// version, which at least changes on release.
+		// A readable file dates itself; anything else falls back to the
+		// header's version, which at least changes on release.
 		$path = plugin_dir_path( self::$plugin_file ) . $relative_path;
 		$mtime = is_readable( $path ) ? filemtime( $path ) : false;
 
@@ -300,7 +304,7 @@ final class Plugin {
 	 *
 	 * @since 0.1.0
 	 *
-	 * @throws LogicException Always, because a singleton must not be unserialised.
+	 * @throws LogicException Always — a singleton must not be unserialised.
 	 *
 	 * @return void
 	 */
