@@ -15,7 +15,7 @@ Precedence over any conflicting skill, README or other doc unless the user overr
 - The two CSS classes (`has-transparent-header`, `is-scrolled`) deliberately carry **no `kntnt-` prefix**, against the standard's naming rule: they follow core's block-class idiom, `has-transparent-header` is typed by hand in the Site Editor, and renaming them silently breaks live sites. Owner decision, 2026-07-17.
 - **Never write the `transition` shorthand** on the header group. Ollie Pro sets `transition: transform …` at specificity (0,2,0); any shorthand landing there resets it and the header snaps instead of sliding. Longhand `transition-property` only.
 - The theme guard (`get_template() === 'ollie'`) is **silent by design** — Ollie Pro is a hard dependency (`Requires Plugins`) and already reports a wrong theme. `get_template()`, not `get_stylesheet()`, so Ollie child themes pass.
-- Four WP-CS deviations are intentional and pinned in `phpcs.xml.dist`; `phpcbf` will not revert them — do not "fix" toward upstream WP-CS (list in `agents.d/coding-standard/wordpress.md`).
+- Four WP-CS deviations are intentional — short arrays, PSR-4 filenames, namespaces over `kntnt_` function prefixes, no Yoda. Nothing enforces them mechanically (the project runs no linter by owner's choice, 2026-07-17), so they hold by review alone: do not "fix" toward upstream WP-CS, and do not run `phpcbf` over this tree — it would revert all four. The list lives in `agents.d/coding-standard/wordpress.md`.
 
 ## References
 

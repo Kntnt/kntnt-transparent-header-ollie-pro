@@ -1,9 +1,8 @@
-# Dependencies — restored by `composer install`. The plugin ships no runtime
-# dependency; vendor/ exists only for the development tooling.
+# Dependencies. The plugin has none — neither runtime nor development — so
+# vendor/ should never appear; ignored so a stray `composer require` cannot
+# commit one by accident.
 /vendor/
 
-# Tooling caches.
-.phpcs-cache
 *.log
 
 # Release artefact.
