@@ -1,0 +1,18 @@
+# Dependencies — restored by `composer install`. The plugin ships no runtime
+# dependency; vendor/ exists only for the development tooling.
+/vendor/
+
+# Tooling caches.
+.phpcs-cache
+*.log
+
+# Release artefact.
+/dist/
+/kntnt-transparent-header-ollie-pro.zip
+
+# Editor / OS files.
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
