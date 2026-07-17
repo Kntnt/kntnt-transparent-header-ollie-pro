@@ -247,7 +247,9 @@ composer phpcbf    # fixes most violations automatically
 shellcheck build-release-zip.sh
 ```
 
-`composer phpcs` must report **0 errors** before you open a pull request. Two warnings about long lines are expected and unavoidable: the plugin header's `Description:` must be a single line, and a translators' string cannot be split.
+`composer phpcs` must be **silent** — no errors and no warnings — before you open a pull request. Warnings fail the gate too, so anything it prints is a real finding, not noise to look past.
+
+The two lines that genuinely cannot be wrapped — the plugin header's `Description:`, which WordPress parses from a single line, and a translatable string, which breaks extraction if split — carry their own `phpcs:ignore` naming the sniff and the reason. That is the only sanctioned way to silence a finding: name the sniff, give the reason, keep the scope as small as possible.
 
 The ruleset in `phpcs.xml.dist` deliberately switches off several sniffs where the WordPress Coding Standards contradict this project's standard. Do not "fix" the code toward upstream WP-CS, and note that **`phpcbf` will not revert those deviations** — they are excluded, not tolerated.
 

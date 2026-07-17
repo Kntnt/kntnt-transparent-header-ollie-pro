@@ -33,12 +33,12 @@ The plugin requires **PHP 8.5**. It has no runtime dependencies; `composer insta
 Run these before opening a pull request:
 
 ```bash
-composer phpcs                    # must report 0 errors
+composer phpcs                    # must be silent: 0 errors, 0 warnings
 composer phpcbf                   # fixes most violations automatically
 shellcheck build-release-zip.sh   # if you touched the build script
 ```
 
-Two long-line warnings from `phpcs` are expected and unavoidable — the plugin header's `Description:` must be one line, and a translators' string cannot be split.
+`phpcs` fails on warnings as well as errors, so a clean run means clean — there is no expected noise to look past. The two lines that genuinely cannot be wrapped carry their own `phpcs:ignore` naming the sniff and the reason; that is the only sanctioned way to silence a finding, and it needs the smallest possible scope.
 
 There is deliberately **no test suite**. The plugin's only logic is deciding when to enqueue two files, so there is nothing a unit test could meaningfully constrain. If you add real logic, say so in the pull request and we will add tests with it.
 

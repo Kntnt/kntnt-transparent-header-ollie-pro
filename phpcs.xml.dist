@@ -82,18 +82,18 @@
 	<!-- Require short array syntax ([ ]) — never array(). -->
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
 
-	<!-- Allow longer lines — the project caps at 120 cols for code. Over-length
-	     lines are reported as warnings, never hard errors. -->
+	<!-- The standard caps code at 120 cols. Over-length lines are warnings, not
+	     hard errors, but the gate below fails on them anyway: the two lines that
+	     genuinely cannot be wrapped — the plugin header's Description and a
+	     translatable string — carry their own `phpcs:ignore` naming this sniff
+	     and the reason. A clean run means clean; there is no expected noise to
+	     look past. -->
 	<rule ref="Generic.Files.LineLength">
 		<properties>
 			<property name="lineLimit" value="120"/>
 			<property name="absoluteLineLimit" value="0"/>
 		</properties>
 	</rule>
-
-	<!-- The single-line WordPress plugin-header "Description:" is unavoidably
-	     long; keep line-length findings informative without failing the gate. -->
-	<config name="ignore_warnings_on_exit" value="1"/>
 
 	<!-- Minimum supported versions for the WordPress and PHP compatibility sniffs. -->
 	<config name="minimum_supported_wp_version" value="6.7"/>
