@@ -22,7 +22,7 @@ No settings page. No CSS to write. You add one class in the Site Editor.
 Both requirements are enforced, and neither nags you:
 
 - **Ollie Pro** is declared in the `Requires Plugins` header, so WordPress will not activate this plugin without it, and deactivates this one if you deactivate Ollie Pro.
-- **The Ollie theme** is checked at load. Under any other theme the plugin does nothing at all — no assets, no hooks, and no admin notice, since Ollie Pro already reports a wrong theme and there is no point saying it twice.
+- **The Ollie theme** is checked at load. Under any other theme the plugin loads no styles or scripts and touches nothing on your pages, and says nothing about it either — Ollie Pro already reports a wrong theme, and there is no point saying it twice. It keeps checking for its own updates, so a site that switches away from Ollie and back is not stranded on an old version.
 
 ## Installation
 

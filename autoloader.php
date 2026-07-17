@@ -11,7 +11,7 @@
  * `classes/<Class_Name>.php`, with sub-namespaces as sub-directories.
  *
  * @package Kntnt\Transparent_Header_Ollie_Pro
- * @since   1.0.0
+ * @since   0.1.0
  */
 
 declare( strict_types = 1 );
@@ -25,7 +25,7 @@ spl_autoload_register(
 	/**
 	 * Loads a class from `classes/` when it belongs to this plugin.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $class_name Fully qualified class name being resolved.
 	 * @return void

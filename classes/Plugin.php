@@ -6,7 +6,7 @@
  * load the stylesheet and script implementing transparent header mode.
  *
  * @package Kntnt\Transparent_Header_Ollie_Pro
- * @since   1.0.0
+ * @since   0.1.0
  */
 
 declare( strict_types = 1 );
@@ -23,14 +23,14 @@ use LogicException;
  * constructor registers every WordPress hook, so it stays the single
  * authoritative place to trace the hook graph.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class Plugin {
 
 	/**
 	 * Handle used for both the stylesheet and the script.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @var string
 	 */
@@ -43,16 +43,28 @@ final class Plugin {
 	 * Ollie's sticky rule have identical specificity, so source order decides the
 	 * winner.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @var string
 	 */
 	private const THEME_HANDLE = 'ollie';
 
 	/**
+	 * Ollie's template directory, i.e. the slug of the theme this plugin extends.
+	 *
+	 * Equal to THEME_HANDLE by coincidence, not by rule: one names a registered
+	 * stylesheet, the other a directory on disk, and either could change alone.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var string
+	 */
+	private const THEME_TEMPLATE = 'ollie';
+
+	/**
 	 * The sole instance of this class.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @var self|null
 	 */
@@ -61,7 +73,7 @@ final class Plugin {
 	/**
 	 * Absolute path to the main plugin file.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @var string
 	 */
@@ -72,7 +84,7 @@ final class Plugin {
 	 *
 	 * Populated lazily on the first call to get_plugin_data().
 	 *
-	 * @since 1.1.0
+	 * @since 0.1.0
 	 *
 	 * @var array<string, string>|null
 	 */
@@ -85,7 +97,7 @@ final class Plugin {
 	 * asset helpers can resolve URLs without globals. Subsequent calls ignore the
 	 * argument and return the existing instance.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $plugin_file Absolute path to the main plugin file. Ignored
 	 *                            on calls after the first.
@@ -109,7 +121,7 @@ final class Plugin {
 	/**
 	 * Returns the absolute path to the main plugin file.
 	 *
-	 * @since 1.1.0
+	 * @since 0.1.0
 	 *
 	 * @return string Absolute path to the main plugin file.
 	 */
@@ -124,7 +136,7 @@ final class Plugin {
 	 * admin-only include that is absent on the front end, and it would translate
 	 * the header — triggering a just-in-time textdomain load before `init`.
 	 *
-	 * @since 1.1.0
+	 * @since 0.1.0
 	 *
 	 * @return array<string, string> Header fields, each '' when absent.
 	 */
@@ -153,26 +165,50 @@ final class Plugin {
 	/**
 	 * Registers the plugin's WordPress hooks.
 	 *
-	 * Enqueues at priority 20 so the theme's stylesheet is already registered and
-	 * can be depended on; plugins hook earlier than themes, so the default
-	 * priority would put this stylesheet first and silently lose the cascade.
+	 * Split in two by design. Self-updating runs under every theme; the header
+	 * feature runs only under Ollie.
 	 *
-	 * The Updater is wired here because GitHub-hosted self-updates are core
-	 * infrastructure rather than part of the header feature: the plugin is
-	 * distributed from its GitHub releases, not wordpress.org, so without it an
-	 * install would never learn that a new version exists.
-	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 */
 	private function __construct() {
 
-		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ], 20 );
-
 		// Wire the GitHub-release update checker into the WordPress update
 		// transient so installs can self-update from the project's releases.
+		// Deliberately outside the theme check below: the plugin is distributed
+		// from GitHub rather than wordpress.org, so this filter is the only way an
+		// install ever learns a new version exists. Staying updated matters more
+		// than staying inert — a site parked on another theme must not silently
+		// rot on an old version until someone switches back to Ollie.
 		$updater = new Updater();
 		add_filter( 'pre_set_site_transient_update_plugins', [ $updater, 'check_for_updates' ] );
 
+		// Everything below extends rules only Ollie and Ollie Pro ship, so under
+		// any other theme there is nothing to act on. Silent by design: Ollie Pro
+		// is a hard dependency and already reports a wrong theme, so a second
+		// notice would only repeat it.
+		if ( ! self::is_ollie_active() ) {
+			return;
+		}
+
+		// Enqueue at priority 20 so the theme's stylesheet is already registered
+		// and can be depended on; plugins hook earlier than themes, so the default
+		// priority would put this stylesheet first and silently lose the cascade.
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ], 20 );
+
+	}
+
+	/**
+	 * Reports whether the active theme is Ollie, the theme this plugin extends.
+	 *
+	 * `get_template()` names the parent theme, so Ollie child themes — which
+	 * inherit the very rules this plugin patches — pass just like Ollie itself.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return bool True when Ollie or one of its child themes is active.
+	 */
+	private static function is_ollie_active(): bool {
+		return get_template() === self::THEME_TEMPLATE;
 	}
 
 	/**
@@ -183,7 +219,7 @@ final class Plugin {
 	 * footer without `defer` so it runs during parse and sets the class before
 	 * first paint — deferring it makes the header flash solid on load.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -216,7 +252,7 @@ final class Plugin {
 	 * Uses the file's modification time, so edits take effect without a version
 	 * bump; falls back to the plugin version if the file cannot be stat'ed.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $relative_path Path to the asset, relative to the plugin root.
 	 * @return string
@@ -238,7 +274,7 @@ final class Plugin {
 	 * Read from the header rather than duplicated in a constant, so the version
 	 * has exactly one authoritative source.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return string The version string, or '' when the header is unreadable.
 	 */
@@ -249,7 +285,7 @@ final class Plugin {
 	/**
 	 * Prevents cloning of the singleton.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @throws LogicException Always, because a singleton must not be cloned.
 	 *
@@ -262,7 +298,7 @@ final class Plugin {
 	/**
 	 * Prevents unserialisation of the singleton.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @throws LogicException Always, because a singleton must not be unserialised.
 	 *

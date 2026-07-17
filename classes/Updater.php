@@ -10,7 +10,7 @@
  * by build-release-zip.sh carries no version segment.
  *
  * @package Kntnt\Transparent_Header_Ollie_Pro
- * @since   1.1.0
+ * @since   0.1.0
  */
 
 declare( strict_types = 1 );
@@ -26,14 +26,14 @@ use stdClass;
  * repository named by the Plugin URI header, and advertises the release's ZIP
  * asset as the update package when a newer version exists.
  *
- * @since 1.1.0
+ * @since 0.1.0
  */
 final class Updater {
 
 	/**
 	 * Site transient caching the decoded GitHub release response.
 	 *
-	 * @since 1.1.0
+	 * @since 0.1.0
 	 *
 	 * @var string
 	 */
@@ -46,7 +46,7 @@ final class Updater {
 	 * update package: the update installer runs with full filesystem rights, so
 	 * the download host must not be attacker-chosen through a tampered header.
 	 *
-	 * @since 1.1.0
+	 * @since 0.1.0
 	 *
 	 * @var string[]
 	 */
@@ -65,7 +65,7 @@ final class Updater {
 	 * `set_site_transient( 'update_plugins', false )` to clear it. A narrower
 	 * signature would throw a fatal TypeError in that case.
 	 *
-	 * @since 1.1.0
+	 * @since 0.1.0
 	 *
 	 * @param mixed $transient The update transient passed by the filter.
 	 *                         Normally a stdClass; possibly false during a reset.
@@ -138,7 +138,7 @@ final class Updater {
 	 * response is cached in a site transient to avoid hammering the GitHub API
 	 * on every update check (60 req/hr unauthenticated rate limit).
 	 *
-	 * @since 1.1.0
+	 * @since 0.1.0
 	 *
 	 * @param string $repo The repository name in 'user/repo' format.
 	 * @return array<mixed>|null Release data on success, null on failure.
@@ -181,7 +181,7 @@ final class Updater {
 	 * by content type, not filename, so the version-less asset name stays
 	 * compatible with self-update.
 	 *
-	 * @since 1.1.0
+	 * @since 0.1.0
 	 *
 	 * @param array<mixed> $release Decoded GitHub release data.
 	 * @return string|null The download URL of the first usable ZIP asset, or null.
@@ -218,7 +218,7 @@ final class Updater {
 	 * Extracts the 'user/repo' part from a full GitHub URL such as
 	 * 'https://github.com/user/repo'.
 	 *
-	 * @since 1.1.0
+	 * @since 0.1.0
 	 *
 	 * @param string $uri The full GitHub Plugin URI from the plugin header.
 	 * @return string|null The 'user/repo' slug on success, or null if invalid.
@@ -248,7 +248,7 @@ final class Updater {
 	 * Returns an empty string when the field is absent or not a string, so
 	 * callers can inline the call without a ternary ladder.
 	 *
-	 * @since 1.1.0
+	 * @since 0.1.0
 	 *
 	 * @param array<mixed> $data The source array.
 	 * @param string       $key  The key to look up.
