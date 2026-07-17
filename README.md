@@ -1,7 +1,7 @@
 # Kntnt Transparent Header for Ollie Pro
 
-[![Requires WordPress: 6.7+](https://img.shields.io/badge/WordPress-6.7+-blue.svg)](https://wordpress.org)
-[![Requires PHP: 8.5+](https://img.shields.io/badge/PHP-8.5+-blue.svg)](https://php.net)
+[![Requires WordPress: 6.5+](https://img.shields.io/badge/WordPress-6.5+-blue.svg)](https://wordpress.org)
+[![Requires PHP: 8.3+](https://img.shields.io/badge/PHP-8.3+-blue.svg)](https://php.net)
 [![License: GPL v2+](https://img.shields.io/badge/License-GPLv2+-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
 [![Latest release](https://img.shields.io/github/v/release/Kntnt/kntnt-transparent-header-ollie-pro)](https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/releases/latest)
 
@@ -19,7 +19,7 @@ It is for anyone running Ollie and Ollie Pro who wants that effect without writi
 - **Fades to your own colour.** Scroll past 20 pixels and the header fades back to the background colour *you* chose in the Site Editor. The plugin ships no colours of its own and never overrides your design.
 - **Solid behind open menus.** Open a mega menu or the mobile menu and the header turns solid immediately, so the panel has a backdrop instead of floating over the picture.
 - **No flash on page load.** The header is transparent from the very first frame, not solid-then-corrected.
-- **Fixes two Ollie Pro bugs** along the way (see [What the plugin actually does](#what-the-plugin-actually-does)).
+- **Fixes two Ollie Pro bugs** along the way (see [Why you can't simplify this](#why-you-cant-simplify-this)).
 - **No settings page.** One class in the Site Editor is the whole configuration.
 - **Updates itself** from GitHub, like any plugin from wordpress.org.
 
@@ -35,21 +35,19 @@ It does that work once, correctly, as a mechanism with no design opinions. You k
 
 ## Requirements
 
-| | |
-|---|---|
-| WordPress | 6.7 or later |
-| PHP | 8.5 or later |
-| Theme | **Ollie**, or any child theme of it |
-| Plugin | **Ollie Pro** |
+* **WordPress:** 6.5 or later
+* **PHP:** 8.3 or later
+* **Theme:** Ollie, or any child theme of it
+* **Plugin:** Ollie Pro
 
 Both requirements are enforced, and neither nags you:
 
-- **Ollie Pro** is declared in the `Requires Plugins` header, so WordPress will not let you activate this plugin without it, and deactivates this one if you deactivate Ollie Pro.
-- **The Ollie theme** is checked when the plugin loads. Under any other theme it loads no styles or scripts and touches nothing on your pages, and says nothing about it either — Ollie Pro already tells you when the theme is wrong, and there is no point saying it twice. It does keep checking for its own updates, so a site that switches away from Ollie and back is not stranded on an old version.
+- **Ollie Pro** is declared in the `Requires Plugins` header, so WordPress will not let you activate this plugin without it, and deactivates this one if you deactivate Ollie Pro. That header is also what sets the WordPress floor: it landed in 6.5, and on anything older it is ignored, so the plugin would activate with no Ollie Pro present. Nothing else here needs a WordPress newer than that.
+- **The Ollie theme** is checked when the plugin loads. Under any other theme it loads no styles or scripts and touches nothing on your pages, and says nothing about it either.
 
 ## Installation
 
-1. Download **`kntnt-transparent-header-ollie-pro.zip`** from the [latest release](https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/releases/latest/download/kntnt-transparent-header-ollie-pro.zip).
+1. Download [kntnt-transparent-header-ollie-pro.zip](https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/releases/latest/download/kntnt-transparent-header-ollie-pro.zip).
 2. In WordPress, go to **Plugins → Add New → Upload Plugin**.
 3. Choose the file you downloaded and click **Install Now**.
 4. Click **Activate**.
@@ -58,47 +56,83 @@ That is the normal WordPress upload route — nothing special. The plugin is not
 
 ## Usage
 
-Three steps in the Site Editor. No CSS required.
+Two steps in the Site Editor. No CSS required.
 
 ### 1. Build the header template part
 
 1. **Appearance → Editor** → *Patterns* → *Template parts* → **Add new**. Name it `Header`, area **Header**.
+
 2. Add a **Group** block as the outermost block. It must be a Group — Ollie Pro's sticky controls appear on no other block.
+
 3. Select the group → **Position → Sticky**.
+
 4. Ollie Pro's controls now appear under Position:
-   - **☑ "Hide on Scroll Down"** — this is the hide-on-scroll-down/show-on-scroll-up behaviour. (The block attribute is called `stickyOnScrollUp`; don't go looking for "scroll up" in the UI.)
-   - **Top Offset: leave at 0.** Setting it makes Ollie Pro take over offset handling and the plugin's admin-bar fix becomes redundant.
-   - *Unstick on Mobile*: off.
-   - *Sticky Z-Index*: `9999`.
+
+   1. *Hide in Scroll Down:* Check
+
+   2. *Top Offset:* 0
+
+   3. *Unstick on Mobile*: Your choice (off is recommended)
+
+   4. *Sticky Z-Index*: empty
+
 5. Put the logo, navigation and so on **inside** the group.
+
 6. Give the group a **background colour**. This is the solid state — what you see once scrolled.
 
-### 2. Add the part to your templates
+> [!NOTE]
+> The plugin puts `position: fixed` on the `header` itself, which already lifts it over the hero; Ollie Pro's z-index lands on the group *inside* that header, where it changes nothing.
 
-In each template, add the **Template Part** block as a **direct child of the template root**, with `tagName: header` and `className: site-header`.
-
-> **Never wrap the template part in a Group block.**
+> [!IMPORTANT]
 >
-> Ollie makes the header sticky in pure CSS — `body:not(.wp-admin) header:has(>.is-position-sticky) { position: sticky }` — and a sticky element can never leave its parent's box. A wrapper shrinks to exactly the header's height, which leaves zero room to travel, and **sticky dies silently**: no error, the header just scrolls away with the page. Stock Ollie has no wrapper.
+> **Don't set a hover colour on the header group.**
 >
-> The trap is adding a group *"just to put a class on it"*. Don't. Put the class on the **Template Part block** instead (Advanced → Additional CSS class(es)).
+> Ollie Pro writes the `transition` shorthand for both `hoverTextColor` and `stickyOnScrollUp` at equal specificity; the hover rule wins on source order and kills the slide. Put hover colours on the links inside the header instead.
 
-### 3. Turn on transparent mode
+### 2. Turn on transparent mode
 
-On the template that has a hero, select the **Template Part** block → **Advanced → Additional CSS class(es)**:
+Do this on **the templates where you want a transparent header**. Those are the only templates that change; all your others keep their normal solid header.
 
-```
-site-header has-transparent-header
-```
+1. Go to **Appearance → Editor** → *Templates* and click the template you want — for example *Front Page*.
+
+2. Click the pencil (**Edit**) to open it.
+
+3. Click **once** on the header at the very top of the template. The little toolbar that pops up must say **Template Part**. If it names another block, you have clicked something *inside* the header — press **Esc** until *Template Part* appears.
+
+4. In the sidebar on the right, scroll down and open **Advanced**.
+
+5. Click into **Additional CSS class(es)** and type `has-transparent-header`. If something is already in the field — Ollie's templates put `site-header` there — leave it and add yours after a space.
+
+6. Click **Save**.
+
+Repeat for each template where you want it.
 
 That's the whole configuration. The hero should be the first block in `main`, with no top margin — the header lays over it.
 
-### Two things that will silently break it
-
-- **Don't wrap the template part in a Group**, as above. It is the single most common way to lose the sticky header.
-- **Don't set a hover colour on the header group.** Ollie Pro writes the `transition` shorthand for both `hoverTextColor` and `stickyOnScrollUp` at equal specificity; the hover rule wins on source order and kills the slide. Put hover colours on the links inside the header instead.
-
 If your logo or links are hard to read against the hero, that is expected — they keep their normal colour. See [Colouring the header's contents](#colouring-the-headers-contents-against-the-hero) below.
+
+> [!IMPORTANT]
+> **The header must come out as a `<header>` element.**
+>
+> That is what the plugin hangs on: every rule it ships starts with `header.has-transparent-header`, and Ollie's own sticky rule keys on the tag as well. Land the header in a `<div>` instead and nothing happens at all — no error, no effect, just a header that stays solid.
+>
+> **Using Ollie's ready-made header? Then it is already taken care of, and there is nothing for you to do.** Ollie's templates ship the header part with the tag set explicitly, and the part you built in step 1 carries the **Header** area, which produces `<header>` on its own.
+
+> [!IMPORTANT]
+> **Never put the Template Part inside a Group block.**
+>
+> The Group belongs **inside** the header part, as in step 1 — never around it. Wrap the part in a Group and the sticky header dies silently: no error, no warning, the header just scrolls away with the page like any ordinary block.
+>
+> The reason is that Ollie makes the header sticky in pure CSS — `body:not(.wp-admin) header:has(>.is-position-sticky) { position: sticky }` — so the `<header>` element itself is the thing that sticks. A sticky element can never leave its parent's box, and a wrapping Group shrinks to exactly the header's height, which leaves it no room at all to travel. Stock Ollie ships no wrapper for precisely this reason.
+>
+> The usual way people fall into it is adding a Group *"just to have somewhere to put the class"*. Don't. The class goes on the **Template Part** block itself — Advanced → Additional CSS class(es), as in step 2.
+
+> [!WARNING]
+> **Ollie's Academy teaches a different structure. Use step 1's instead.**
+>
+> The lesson [Sticky headers using sticky positioning](https://olliewp.com/lesson/using-sticky-positioning-for-sticky-a/) wraps the header part in a Group and makes *that* sticky. It works — but this plugin reads the opposite structure: the sticky Group **inside** the `<header>`, as step 1 builds it. With the Group outside, nothing matches and the header stays solid, silently.
+>
+> No trade-off: Ollie's header pattern already has that Group inside, and the theme ships the CSS to make the header sticky from it — `header:has(>.is-position-sticky)`. Step 1 only switches it on. Same sticky, hide-on-scroll header, plugin or not, and the only one that can go transparent.
 
 ## Questions, bugs, and feature requests
 
@@ -157,17 +191,6 @@ You can equally use literal colours, including 8-digit hex: `#fff20033` at the t
 
 **Never write the `transition` shorthand on the header group.** Ollie Pro sets `transition: transform …` on it at specificity (0,2,0). Any shorthand that also lands there resets the transform transition and the header will **snap instead of slide**. Add properties with `transition-property` only — the plugin already does this, so normally you need not touch it at all.
 
-### What the plugin actually does
-
-Three CSS rules and one small script.
-
-| | Why |
-|---|---|
-| `--sticky-full-offset: var(--wp-admin--admin-bar--height, 0px)` | **Ollie Pro defect.** It hides the header with `translateY(calc(-100% - var(--sticky-full-offset)))` but only ever sets that variable when a Top Offset is configured. With the theme pinning the header below the admin bar, a logged-in user is otherwise left with an admin-bar-tall strip of header on screen. |
-| `transition-property: transform, background-color, box-shadow` | Ollie Pro transitions only `transform`, so the background would flip in one frame. Only the longhand is overridden, so duration and timing are inherited from Ollie Pro's own rule and the fade stays in step with the slide by construction. |
-| `position: fixed` on `.has-transparent-header` | Ollie's rule makes every sticky header `sticky`, i.e. in the flow, which pushes the hero down. Both rules have identical specificity (0,2,2), so this only wins because the stylesheet is enqueued **after** the theme's — hence priority 20 and a dependency on the `ollie` handle. |
-| `is-scrolled` toggle | The only thing that genuinely needs JavaScript. |
-
 ### Why the transparent state has no class of its own
 
 You may expect an `is-transparent` class. There isn't one, deliberately.
@@ -208,7 +231,7 @@ This section assumes nothing beyond a terminal. If you have never contributed to
 ### What you need
 
 - **Git** — [installation guide](https://git-scm.com/downloads).
-- **PHP 8.5 or later** — check with `php -v`.
+- **PHP 8.3 or later** — check with `php -v`.
 - **Composer** — [installation guide](https://getcomposer.org/download/). It installs the development tools; the plugin itself has no dependencies and ships none.
 - A **GitHub account**, and [`gh`](https://cli.github.com/) if you want to publish releases.
 
@@ -242,10 +265,16 @@ Then open a pull request: GitHub shows a **Compare & pull request** button after
 ### Quality gates
 
 ```bash
+composer gate      # both of the below, in order
 composer phpcs     # WordPress Coding Standards, with the documented deviations
+composer phpstan   # static analysis at level max, and the PHP floor
 composer phpcbf    # fixes most violations automatically
 shellcheck build-release-zip.sh
 ```
+
+Both gates must be **clean** before you open a pull request.
+
+`composer phpstan` runs at `level: max` and is also the only thing enforcing the `Requires PHP` floor: `phpVersion` in `phpstan.neon.dist` is set to it, so syntax newer than the floor is reported — and that diagnostic is non-ignorable, so a baseline cannot bury it. Keep the two in step. phpcs cannot do this job; its `testVersion` setting belongs to PHPCompatibility, whose last stable release (9.3.5, 2019) knows nothing of PHP 8.0 or later and would pass this codebase in silence at any setting.
 
 `composer phpcs` must be **silent** — no errors and no warnings — before you open a pull request. Warnings fail the gate too, so anything it prints is a real finding, not noise to look past. Suppressing a finding needs a `phpcs:ignore` that names the sniff and gives the reason, at the smallest possible scope; there are currently none in the codebase, and that is the preferred state.
 
@@ -253,7 +282,7 @@ Two rules the coding standard states are **not** enforced by the gate, because n
 
 The ruleset in `phpcs.xml.dist` deliberately switches off several sniffs where the WordPress Coding Standards contradict this project's standard. Do not "fix" the code toward upstream WP-CS, and note that **`phpcbf` will not revert those deviations** — they are excluded, not tolerated.
 
-There is no test suite. The plugin's only logic is deciding when to enqueue two files; there is nothing a unit test could meaningfully constrain that the coding-standard gate and a browser do not.
+There is no test suite. The plugin's only logic is deciding when to enqueue two files; there is nothing a unit test could meaningfully constrain that the two gates and a browser do not.
 
 ### Building a release ZIP locally
 
@@ -278,6 +307,17 @@ git push origin v0.1.0
 ```
 
 `--create` takes the release notes from the matching section of [`CHANGELOG.md`](CHANGELOG.md). Use `--update` to replace the asset on a release that already exists. The asset name deliberately carries no version number, which is what keeps the `latest/download` link above permanent.
+
+### Why you can't simplify this
+
+The whole plugin is three CSS rules and one script. Every one of them looks naive or removable, and every one is load-bearing. The obvious cleanup is listed against each, because that cleanup is how each bug gets reintroduced.
+
+| Rule | The tempting "fix" | What it costs |
+|---|---|---|
+| `--sticky-full-offset: var(--wp-admin--admin-bar--height, 0px)` | Delete it — nothing references it in this codebase. | Ollie Pro hides the header with `translateY(calc(-100% - var(--sticky-full-offset)))` but only sets that variable when a Top Offset is configured, while Ollie pins the header down by the admin bar's height regardless. The header then stops exactly that far short of the top. The admin bar masks the leftover band while it is fixed, but at 600px and below core makes it `absolute` and it scrolls away — leaving a logged-in visitor a 46px strip of header stuck to the top of the screen. Measured, not theorised. |
+| `transition-property: transform, background-color, box-shadow` | Collapse it into the `transition` shorthand. | The shorthand resets Ollie Pro's own `transition: transform …` at equal specificity, and the header snaps instead of sliding. The longhand overrides only the property list, so duration and timing stay inherited from Ollie Pro's rule and the fade cannot drift out of step with the slide. |
+| `position: fixed` on `.has-transparent-header` | Add `!important` to make it win. | It already wins, and not by specificity: Ollie's sticky rule ties it exactly at (0,2,2). It wins on source order alone — which is why the stylesheet is enqueued at priority 20 with a dependency on the `ollie` handle. Change either and the header goes back to `sticky`, in the flow, pushing the hero down. `!important` would paper over that and hide the real dependency. |
+| the `is-scrolled` toggle in `js/header.js` | Have it add `is-transparent` instead — it reads more naturally. | A script-set class cannot exist at first paint, so every page load would render solid, then fade to transparent: a visible flash. Transparency has to be the *default*, i.e. the absence of a class. See [Why the transparent state has no class of its own](#why-the-transparent-state-has-no-class-of-its-own). |
 
 ### Project layout
 

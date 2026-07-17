@@ -21,4 +21,4 @@ Precedence over any conflicting skill, README or other doc unless the user overr
 - `agents.d/header-css.md` — before touching `css/header.css` or `js/header.js`
 - `agents.d/deviations.md` — before `phpcs`/`phpcbf`, or "fixing" style or naming
 - `agents.d/releasing.md` — cutting a release, or adding a runtime file
-- `README.md` — Site Editor setup contract; cascade rationale
+- `README.md` — Site Editor setup contract; cascade rationale. §Extending and §Why you can't simplify this are mirrored by `agents.d/header-css.md` — change both.

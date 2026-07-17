@@ -11,7 +11,7 @@ First release. Everything below is what 0.1.0 ships.
 ### Added
 
 - Transparent-over-hero mode for Ollie's sticky header: transparent at the top of the page, fading to the header group's own background colour once scrolled past 20px, and solid whenever a menu inside the header is open. The plugin ships no colours — the solid state is whatever background you set on the group block in the Site Editor.
-- A workaround for Ollie Pro leaving `--sticky-full-offset` unset unless a Top Offset is configured, which left logged-in users with an admin-bar-tall strip of header on screen.
+- A workaround for Ollie Pro leaving `--sticky-full-offset` unset unless a Top Offset is configured, which left a logged-in visitor a strip of header stuck to the top of the screen on viewports of 600px and below — where the admin bar stops being fixed and no longer hides it.
 - A workaround for Ollie Pro transitioning only `transform`, which made the background flip in a single frame instead of fading in step with the slide.
 - `Requires Plugins: ollie-pro` header, so WordPress refuses to activate the plugin without Ollie Pro and deactivates it if Ollie Pro goes away.
 - A silent guard that skips the header feature when the active theme is not Ollie (or one of its child themes). It stays quiet on purpose: Ollie Pro already reports a wrong theme, and a second notice would only repeat it.

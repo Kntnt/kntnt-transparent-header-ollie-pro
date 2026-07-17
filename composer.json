@@ -11,12 +11,14 @@
         }
     ],
     "require": {
-        "php": ">=8.5"
+        "php": ">=8.3"
     },
     "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "phpstan/phpstan": "^2.2",
         "squizlabs/php_codesniffer": "^3.9",
-        "wp-coding-standards/wpcs": "^3.0",
-        "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
+        "szepeviktor/phpstan-wordpress": "^2.0",
+        "wp-coding-standards/wpcs": "^3.0"
     },
     "autoload": {
         "psr-4": {
@@ -32,7 +34,12 @@
     "scripts": {
         "phpcs": "phpcs --standard=phpcs.xml.dist",
         "phpcbf": "phpcbf --standard=phpcs.xml.dist",
-        "build": "bash build-release-zip.sh"
+        "build": "bash build-release-zip.sh",
+        "phpstan": "phpstan analyse --memory-limit=1G",
+        "gate": [
+            "@phpcs",
+            "@phpstan"
+        ]
     },
     "minimum-stability": "stable",
     "prefer-stable": true

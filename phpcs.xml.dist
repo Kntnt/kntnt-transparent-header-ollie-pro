@@ -104,8 +104,20 @@
 		comment width is a review responsibility, not a gate.
 	-->
 
-	<!-- Minimum supported versions for the WordPress and PHP compatibility sniffs. -->
-	<config name="minimum_supported_wp_version" value="6.7"/>
-	<config name="testVersion" value="8.5-"/>
+	<!--
+		Keep in step with the `Requires at least` header: this is what makes the
+		WPCS deprecation sniffs flag anything that died after the floor we
+		promise to run on.
+	-->
+	<config name="minimum_supported_wp_version" value="6.5"/>
+
+	<!--
+		No testVersion here. It belongs to PHPCompatibility, which this project
+		does not install — and would not benefit from: its last stable (9.3.5,
+		2019) has no knowledge of PHP 8.0 or later, so it reports nothing on this
+		codebase at any testVersion and only reads like a gate. The `Requires PHP`
+		floor is enforced by PHPStan's `phpVersion` instead — see
+		phpstan.neon.dist.
+	-->
 
 </ruleset>

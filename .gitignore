@@ -23,3 +23,6 @@
 # Editor backups
 *.swp
 *~
+
+# PHPStan local override; phpstan.neon.dist is the committed config.
+/phpstan.neon

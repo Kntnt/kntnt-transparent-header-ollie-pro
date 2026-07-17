@@ -16,9 +16,11 @@
  */
 
 /* Ollie Pro hides the header with translateY(calc(-100% - var(--sticky-full-offset)))
-   but only ever sets that variable when a Top Offset is configured. The theme
-   meanwhile pins the header below the admin bar, so without this a logged-in user
-   is left with an admin-bar-tall strip of header on screen when it should be gone. */
+   but only ever sets that variable when a Top Offset is configured. The theme pins
+   the header down by the admin bar's height regardless, so without this the group
+   stops exactly that far short of the top. While the admin bar is fixed it masks the
+   leftover band; at 600px and below core makes it absolute, it scrolls away, and the
+   band shows as a strip of header hanging at the top of the screen. */
 .wp-block-group[data-sticky-on-scroll-up="true"] {
   --sticky-full-offset: var(--wp-admin--admin-bar--height, 0px);
 }

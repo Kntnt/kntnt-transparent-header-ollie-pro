@@ -31,10 +31,8 @@ final class Plugin {
 	 * Handle used for both the stylesheet and the script.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @var string
 	 */
-	private const HANDLE = 'kntnt-transparent-header-ollie-pro';
+	private const string HANDLE = 'kntnt-transparent-header-ollie-pro';
 
 	/**
 	 * Ollie's own stylesheet handle, from the theme's `Ollie` namespace.
@@ -44,10 +42,8 @@ final class Plugin {
 	 * the winner.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @var string
 	 */
-	private const THEME_HANDLE = 'ollie';
+	private const string THEME_HANDLE = 'ollie';
 
 	/**
 	 * Ollie's template directory: the slug of the theme this plugin extends.
@@ -56,10 +52,8 @@ final class Plugin {
 	 * stylesheet, the other a directory on disk, and either could change alone.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @var string
 	 */
-	private const THEME_TEMPLATE = 'ollie';
+	private const string THEME_TEMPLATE = 'ollie';
 
 	/**
 	 * The sole instance of this class.
@@ -86,7 +80,7 @@ final class Plugin {
 	 *
 	 * @since 0.1.0
 	 *
-	 * @var array<string, string>|null
+	 * @var array{Name: string, PluginURI: string, Version: string, RequiresWP: string, RequiresPHP: string}|null
 	 */
 	private static ?array $plugin_data = null;
 
@@ -139,7 +133,8 @@ final class Plugin {
 	 *
 	 * @since 0.1.0
 	 *
-	 * @return array<string, string> Header fields, each '' when absent.
+	 * @return array{Name: string, PluginURI: string, Version: string, RequiresWP: string, RequiresPHP: string}
+	 *         Header fields, each '' when absent.
 	 */
 	public static function get_plugin_data(): array {
 
@@ -148,7 +143,7 @@ final class Plugin {
 			return self::$plugin_data;
 		}
 
-		self::$plugin_data = get_file_data(
+		$headers = get_file_data(
 			self::$plugin_file,
 			[
 				'Name' => 'Plugin Name',
@@ -158,6 +153,17 @@ final class Plugin {
 				'RequiresPHP' => 'Requires PHP',
 			],
 		);
+
+		// Restate the five keys literally. get_file_data() returns exactly the
+		// keys it was handed, but its declared type is a bare `string[]`, so the
+		// shape this method promises is only a claim until it is rebuilt here.
+		self::$plugin_data = [
+			'Name' => $headers['Name'],
+			'PluginURI' => $headers['PluginURI'],
+			'Version' => $headers['Version'],
+			'RequiresWP' => $headers['RequiresWP'],
+			'RequiresPHP' => $headers['RequiresPHP'],
+		];
 
 		return self::$plugin_data;
 

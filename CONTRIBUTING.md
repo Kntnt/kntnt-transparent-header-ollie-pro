@@ -26,7 +26,7 @@ cd kntnt-transparent-header-ollie-pro
 composer install
 ```
 
-The plugin requires **PHP 8.5**. It has no runtime dependencies; `composer install` only fetches the coding-standard tools, and `vendor/` is neither committed nor shipped.
+The plugin requires **PHP 8.3**. It has no runtime dependencies; `composer install` only fetches the coding-standard tools, and `vendor/` is neither committed nor shipped.
 
 ## Quality gates
 

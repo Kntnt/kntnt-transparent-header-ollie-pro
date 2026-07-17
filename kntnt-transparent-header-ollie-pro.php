@@ -4,8 +4,8 @@
  * Plugin URI:        https://github.com/Kntnt/kntnt-transparent-header-ollie-pro
  * Description:       Gives Ollie's sticky header a transparent-over-hero mode, and works around two Ollie Pro defects. Ships no colours — the header's own background simply reappears once scrolled.
  * Version:           0.1.0
- * Requires at least: 6.7
- * Requires PHP:      8.5
+ * Requires at least: 6.5
+ * Requires PHP:      8.3
  * Requires Plugins:  ollie-pro
  * Author:            Thomas Barregren
  * Author URI:        https://www.kntnt.com
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Guards against running on a PHP version older than the 8.5 floor.
+ * Guards against running on a PHP version older than the 8.3 floor.
  *
  * The plugin header already makes WordPress block activation on older
  * installs. This is a second line of defence for environments that load the
@@ -35,12 +35,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.1.0
  *
- * @return bool True when PHP is 8.5 or newer; false when the guard fires.
+ * @return bool True when PHP is 8.3 or newer; false when the guard fires.
  */
 function kntnt_transparent_header_ollie_pro_requirements_check(): bool {
 
 	// Nothing to do when the runtime meets the requirement.
-	if ( version_compare( PHP_VERSION, '8.5', '>=' ) ) {
+	if ( version_compare( PHP_VERSION, '8.3', '>=' ) ) {
 		return true;
 	}
 
@@ -51,7 +51,7 @@ function kntnt_transparent_header_ollie_pro_requirements_check(): bool {
 			$message = sprintf(
 				/* translators: 1: required PHP version, 2: current version. */
 				__( 'Kntnt Transparent Header for Ollie Pro requires PHP %1$s or later. This server runs PHP %2$s. The plugin has been deactivated.', 'kntnt-transparent-header-ollie-pro' ),
-				'8.5',
+				'8.3',
 				PHP_VERSION,
 			);
 			printf( '<div class="notice notice-error"><p>%s</p></div>', esc_html( $message ) );

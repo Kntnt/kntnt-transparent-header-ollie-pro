@@ -1,10 +1,9 @@
 Read before running `phpcs`/`phpcbf`, or "fixing" style or naming.
 
-- `composer phpcs` must be **silent**: 0 errors, 0 warnings. Warnings fail the gate — no expected noise to look past. Never add `ignore_warnings_on_exit`.
-- **`agents.d/coding-standard/php.md` is locally amended** (the *Line width* section). `/coding-standard --update` reverts it — re-apply until [kntnt-code-skills#37](https://github.com/Kntnt/kntnt-code-skills/issues/37) ships. It is the only hand-edited file in `agents.d/coding-standard/`; the rest are plugin-owned and must not be touched.
-- **Line width**: a comment on its own line never passes col 80; a trailing comment is never wrapped; code has no upper limit. `Generic.Files.LineLength` is therefore absent from `phpcs.xml.dist`. The 80-col comment rule is **unenforced** — no sniff can express it (#37). Review catches it, or nothing does. The plugin header block is the one exception: WordPress parses one field per line, so `Plugin URI` (81) and `Description` (198) cannot wrap. Everything else conforms.
-- **`=>` / `=` alignment is unenforced** for the same reason (#38). The 2 sniffs that demand alignment are excluded, but none forbids it, so aligned `=>` passes silently. `general.md` still bans it.
-- 4 deliberate WP-CS deviations, excluded in `phpcs.xml.dist`: `[ ]` arrays, PSR-4 filenames, namespaces over `kntnt_` prefixes, no Yoda. Listed in `agents.d/coding-standard/wordpress.md`. Never correct toward upstream WP-CS.
-- 1 more sniff excluded where WPCS contradicts the standard: `BlankLineAfterEnd` forbids the trailing blank lines the paragraph rule requires. `phpcbf` reverts none of it — sniffs off, not tolerated.
-- The translators comment must sit **directly** above its `__()` call — nothing between, not even an annotation.
+`phpcs.xml.dist` documents each exclusion at the exclusion. Only what it cannot say lives here.
+
+- `composer phpcs` must be **silent**: 0 errors, 0 warnings. Warnings fail the gate. Never add `ignore_warnings_on_exit`.
+- **`agents.d/coding-standard/php.md` is locally amended** (*Line width*). `/coding-standard --update` reverts it — re-apply until [kntnt-code-skills#37](https://github.com/Kntnt/kntnt-code-skills/issues/37) ships. Only hand-edited file in `agents.d/coding-standard/`; the rest are plugin-owned — never touch.
+- **Plugin header block is exempt from the 80-col comment rule.** WordPress parses one field per line, so `Plugin URI` (81) and `Description` (198) cannot wrap. Everything else conforms.
+- Translators comment sits **directly** above its `__()` call — nothing between, not even an annotation.
 - CSS classes carry **no `kntnt-` prefix**, against `general.md`: core block-class idiom, and `has-transparent-header` is typed by hand into live Site Editors → rename breaks sites silently. Owner decision 2026-07-17. Frozen.

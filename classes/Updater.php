@@ -34,10 +34,8 @@ final class Updater {
 	 * Site transient caching the decoded GitHub release response.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @var string
 	 */
-	private const CACHE_KEY = 'kntnt_transparent_header_ollie_pro_update_check';
+	private const string CACHE_KEY = 'kntnt_transparent_header_ollie_pro_update_check';
 
 	/**
 	 * GitHub hosts a release asset may be downloaded from.
@@ -48,9 +46,9 @@ final class Updater {
 	 *
 	 * @since 0.1.0
 	 *
-	 * @var string[]
+	 * @var string[] Kept: the native `array` type cannot express the element type.
 	 */
-	private const ALLOWED_HOSTS = [ 'github.com', 'objects.githubusercontent.com' ];
+	private const array ALLOWED_HOSTS = [ 'github.com', 'objects.githubusercontent.com' ];
 
 	/**
 	 * Checks for new plugin releases on GitHub.
