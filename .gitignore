@@ -1,18 +1,25 @@
-# Dependencies — restored by `composer install`. The plugin ships no runtime
-# dependency; vendor/ exists only for the development tooling.
+# Composer dependencies — dev tooling only; the plugin ships no runtime
+# dependency and no vendor/.
 /vendor/
 
-# Tooling caches.
-.phpcs-cache
-*.log
-
-# Release artefact.
+# Release artefacts built by ./build-release-zip.sh.
 /dist/
 /kntnt-transparent-header-ollie-pro.zip
 
-# Editor / OS files.
+# Local environment overrides
+.env
+.env.local
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# macOS
 .DS_Store
+
+# Editor / IDE settings
 .idea/
 .vscode/
+
+# Editor backups
 *.swp
 *~
