@@ -258,6 +258,20 @@ final class Plugin {
 			[ 'in_footer' => true ],
 		);
 
+		// Feeds the mega menu panel's top the header's live bottom edge so the
+		// panel hangs flush instead of overlapping the header, which would flash
+		// a bright band during the fade. Loads for every visitor, like the
+		// stylesheet and the is-scrolled script: the band is visible to anyone,
+		// logged in or not. The script self-guards, doing nothing on a page with
+		// no transparent header or no mega menu.
+		wp_enqueue_script(
+			self::HANDLE . '-mega-menu-offset',
+			plugins_url( 'js/mega-menu-offset.js', self::$plugin_file ),
+			[],
+			self::asset_version( 'js/mega-menu-offset.js' ),
+			[ 'in_footer' => true ],
+		);
+
 		// The admin-bar offset only exists for logged-in users. is_admin_bar_showing()
 		// is decided by the `wp` action, which fires before this hook, so it is
 		// settled here.

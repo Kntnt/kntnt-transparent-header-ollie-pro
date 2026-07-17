@@ -99,3 +99,73 @@ header.has-transparent-header > .wp-block-group:not(.is-scrolled):not(:has([aria
   background-color: transparent !important;
   box-shadow: none !important;
 }
+
+/* Fade the mega menu panel in on the header's timing, not its own. Ollie Menu
+   Designer fades an opening panel's opacity in over ~100ms; this plugin fades
+   the header's background in over 300ms (inherited from Ollie Pro's sticky
+   slide – see the transition-property rule above). Over a transparent header
+   the two land at visibly different moments: the panel snaps in while the
+   header colour is still catching up behind it. Matching the panel's opacity
+   transition to the header's makes them read as one surface arriving together.
+
+   The 300ms and the easing are Ollie Pro's own, copied from its sticky rule
+   `.wp-block-group[data-sticky-on-scroll-up="true"] { transition: transform
+   0.3s cubic-bezier(0.4, 0, 0.2, 1) }`. CSS cannot read another element's
+   transition timing, so the constant has to be duplicated here; if Ollie Pro
+   ever retimes its slide, retime this to match. The header and the panel must
+   always share the number, or the mismatch returns.
+
+   The `visibility` step is Ollie's, kept because it carries the closed panel's
+   interactivity: on the way in it flips at once (delay 0s) so the panel is
+   usable immediately; on the way out it waits the whole fade (delay 0.3s) so
+   the panel stays visible while it fades rather than vanishing in one frame.
+   That is why the two states carry different visibility timing.
+
+   Scoped to `:not(.is-scrolled)`: the mismatch exists only while the header is
+   actually fading – transparent and turning solid. A scrolled, already-solid
+   header has no fade to match, so the panel keeps Ollie's snappier default.
+   Desktop only (`min-width: 600px`, Ollie's own desktop threshold): the mobile
+   menu is Ollie's full-screen overlay, not a panel hanging off the header, so
+   there is no header fade to sync it to. */
+@media (min-width: 600px) {
+  header.has-transparent-header > .wp-block-group:not(.is-scrolled) .wp-block-ollie-mega-menu__toggle ~ .wp-block-ollie-mega-menu__menu-container {
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.3s;
+  }
+
+  header.has-transparent-header > .wp-block-group:not(.is-scrolled) .wp-block-ollie-mega-menu__toggle[aria-expanded="true"] ~ .wp-block-ollie-mega-menu__menu-container {
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0s;
+  }
+}
+
+/* Hang the mega menu panel from the header's rendered bottom edge, so the two
+   surfaces meet instead of overlapping. Ollie Menu Designer opens a desktop
+   panel `position: absolute` with a `top` measured from the nav item it belongs
+   to (the block's Top spacing setting), written as an inline style by the
+   block's own script. Because that nav item sits inside the header's vertical
+   padding, the panel's top lands a little above the header's bottom edge and
+   the two overlap by a narrow band. Header and panel carry the same colour, so
+   where they overlap two semi-transparent copies of it composite to something
+   brighter than either (two layers at opacity a make 1 - (1 - a)^2, not a): a
+   bright band that flashes across the header's lower edge for the length of the
+   fade. Syncing the two fades (above) is what makes them semi-transparent at
+   the same instant and reveals the band; removing the overlap is what removes
+   it, at every point in the fade.
+
+   The correct top is the header's bottom edge, which depends on the header's
+   padding and where the nav item sits within it – both per-site, per-design and
+   unknowable to CSS. So js/mega-menu-offset.js measures the header group's live
+   bottom edge, relative to the panel's offset parent, into `--kntnt-mega-menu-
+   top`, and this rule consumes it. `!important` is unavoidable: the block's
+   script sets `top` as an inline style, which nothing weaker than `!important`
+   in a stylesheet can beat. It also decouples the position from the block's
+   write timing – the script rewrites its inline `top` on resize, but never
+   touches this custom property, so the stylesheet keeps winning. The `100%`
+   fallback hangs the panel from the nav item's own bottom before the script
+   runs – near the edge, never overlapping into the band. Desktop only: the
+   mobile menu is Ollie's `position: fixed` full-screen overlay with its own
+   `top`, which this must not fight (the script skips it too). */
+@media (min-width: 600px) {
+  header.has-transparent-header .wp-block-ollie-mega-menu__menu-container {
+    top: var(--kntnt-mega-menu-top, 100%) !important;
+  }
+}

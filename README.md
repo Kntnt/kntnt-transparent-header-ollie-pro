@@ -18,6 +18,7 @@ It is for anyone running Ollie and Ollie Pro who wants that effect without writi
 - **Transparent over the hero.** At the top of the page the header has no background and no shadow. Your hero image starts at the very top of the screen.
 - **Fades to your own colour.** Scroll past 20 pixels and the header fades back to the background colour *you* chose in the Site Editor. The plugin ships no colours of its own and never overrides your design.
 - **Solid behind open menus.** Open a mega menu or the mobile menu and the header turns solid immediately, so the panel has a backdrop instead of floating over the picture.
+- **Mega menus arrive with the header.** When an [Ollie Menu Designer](https://olliewp.com/menu-designer/) mega menu opens over the transparent header, its panel fades in on the header's own timing and hangs flush against it – no snap ahead of the colour, and no bright seam where the two meet.
 - **No flash on page load.** The header is transparent from the very first frame, not solid-then-corrected.
 - **Fixes two Ollie Pro bugs** along the way (see [Why you can't simplify this](#why-you-cant-simplify-this)).
 - **No settings page.** One class in the Site Editor is the whole configuration.
@@ -239,7 +240,7 @@ This section is for developers reading the code – whether to satisfy your curi
 
 ### Why you can't simplify this
 
-The whole plugin is five CSS rules and two small scripts. Every one of them looks naive or removable, and every one is load-bearing. The obvious cleanup is listed against each, because that cleanup is how each bug gets reintroduced.
+The whole plugin is a short stylesheet and three small scripts. Every rule looks naive or removable, and every one is load-bearing. The obvious cleanup is listed against each, because that cleanup is how each bug gets reintroduced.
 
 | Rule | The tempting ‘fix’ | What it costs |
 |---|---|---|
@@ -251,6 +252,8 @@ The whole plugin is five CSS rules and two small scripts. Every one of them look
 | `@media (max-width: 600px) { header:not(.has-transparent-header):has(> [data-sticky-on-scroll-up]) { top: 0 } }` | Delete it – the Ollie *theme* already ships a `top: 0` reset for narrow screens, so this looks redundant. | The theme's reset is dead code. Its selector `header:has(> .is-position-sticky)` (0,1,1) is outweighed by the theme's own unscoped base rule `body:not(.wp-admin) header:has(> .is-position-sticky)` (0,2,2), and media queries add no specificity – so `top` stays at the admin bar's height. At 600px and below core makes the admin bar `absolute` and it scrolls off with the page, leaving the header resting 46px below the top with an empty band above it. This rule reinstates the intended reset with a selector heavy enough to win (0,4,2). Pure CSS suffices because the header is `sticky`: `top: 0` tucks it under the bar in the flow at the very top and sits it flush once stuck. It excludes `.has-transparent-header`, which is `fixed` and sets its own `top` in the rule above. |
 | `background-color: transparent !important` on `:not(.is-scrolled):not(:has([aria-expanded="true"]))` | Drop the `!important`, or drop the `:has()` clause. | The `!important` is not defensiveness: core emits the group's own preset background as `.has-<slug>-background-color { background-color: … !important }`, which nothing without `!important` can beat. Drop the `:has()` clause and an open mega menu or mobile menu hangs over the hero with no backdrop behind it. The clause asks *‘nothing is open’* rather than *‘something is closed’* deliberately: the latter needs a closed element to exist, so a header with no menu at all would never go transparent, and with several toggles a single closed one would keep the header transparent while another stands open. |
 | the `is-scrolled` toggle in `js/header.js` | Have it add `is-transparent` instead – it reads more naturally. | A script-set class cannot exist at first paint, so every page load would render solid, then fade to transparent: a visible flash. Transparency has to be the *default*, i.e. the absence of a class. See [Why the transparent state has no class of its own](#why-the-transparent-state-has-no-class-of-its-own). |
+| the mega menu panel's `transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1) …` | Delete it – Ollie Menu Designer already animates the panel, so re-declaring the transition is redundant. | Ollie fades the panel in over ~100ms; this plugin fades the header's background in over 300ms. Over a transparent header the panel snaps in while the header colour is still catching up behind it – they arrive at visibly different moments. Matching the panel's opacity transition to the header's, same duration and easing, makes them read as one surface arriving together. Both are copied from Ollie Pro's slide because CSS cannot read another element's transition timing; the header and the panel must always share the number. |
+| `top: var(--kntnt-mega-menu-top, 100%) !important` on the panel, fed by `js/mega-menu-offset.js` | Drop it – let Ollie place the panel where its *Top spacing* setting says. | Ollie measures the panel's top from the nav item it belongs to, which sits inside the header's vertical padding, so the panel overlaps the header by a narrow band. Both carry the same colour, so during the fade two semi-transparent copies of it composite to something brighter than either and a bright band flashes across the header's lower edge – and syncing the two fades (the row above) is exactly what makes them semi-transparent at the same instant and reveals it. Hanging the panel from the header's rendered bottom edge removes the overlap, and with it the band. That edge is per-site and per-design and CSS cannot read it, so the script measures it into the variable; `!important` beats the inline `top` Ollie's own block script writes, and the custom-property indirection keeps that script from clobbering the position on resize. |
 
 ### Why some of those rules aren't scoped to the class
 
@@ -273,6 +276,8 @@ css/header.css                           The five rules. Ships no styling
 js/header.js                             Toggles is-scrolled
 js/admin-bar-offset.js                   Pins the transparent header below the
                                          admin bar (logged-in only, below 600px)
+js/mega-menu-offset.js                   Hangs the mega menu panel flush with
+                                         the header's bottom edge (desktop)
 languages/                               Translation template
 agents.d/coding-standard/                The coding standard, by language
 AGENTS.md                                Entry point for AI assistants; also

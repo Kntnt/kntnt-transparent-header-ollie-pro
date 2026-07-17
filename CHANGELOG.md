@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 
 ## [Unreleased]
 
+## [0.2.0] – 2026-07-17
+
+### Added
+
+- Mega menu panels now fade in on the header's own timing over a transparent header. Ollie Menu Designer fades a panel in over about 100ms while this plugin fades the header's background over 300ms, so over a transparent header the panel snapped in a fraction of a second before the header colour caught up behind it. The panel's opacity transition is matched to the header's – the same duration and easing, copied from Ollie Pro's slide because CSS cannot read another element's timing – so the two arrive as one surface. Applies only while the header is actually fading (transparent and turning solid) and only to the desktop dropdown, not the mobile overlay.
+- Removed the bright band that flashed across the header's lower edge while a mega menu opened over the transparent header. Ollie Menu Designer positions the panel from the nav item's Top spacing, which sits inside the header's padding, so the panel overlapped the header by a narrow band; two semi-transparent copies of the same colour composite brighter than either, so mid-fade that overlap showed as a bright strip. A small script now measures the header's live bottom edge and hangs the panel flush against it, edge to edge, so there is no overlap to composite. It measures the panel's top before it paints, so a companion plugin that caps a tall menu's height reads the corrected edge without a shared signal.
+
 ## [0.1.0] – 2026-07-17
 
 ### Added
@@ -21,5 +28,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 - Self-updating from the project's GitHub releases: the plugin appears under *Dashboard → Updates* like any other, checking the repository named by its own `Plugin URI` header at most once every six hours. A release is only offered when it carries a ZIP asset served from GitHub's own download hosts, so a tampered header cannot redirect the update installer at an attacker's package. Update checks run under every theme, unlike the header feature – a site parked on another theme must not rot on an old version.
 - `build-release-zip.sh`, which builds a release zip containing only runtime files, and can create or update the GitHub release and upload the asset. The asset name carries no version segment, keeping the `latest/download` URL stable.
 
-[Unreleased]: https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/releases/tag/v0.2.0
 [0.1.0]: https://github.com/Kntnt/kntnt-transparent-header-ollie-pro/releases/tag/v0.1.0
