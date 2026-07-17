@@ -1,5 +1,5 @@
 /**
- * Mechanism only – no colours, no design opinions.
+ * Mechanism only – no styling of its own, no design opinions.
  *
  * Sticky, hide-on-scroll-down and show-on-scroll-up are the theme's and Ollie
  * Pro's job. This file adds what they have no concept of, plus two fixes.
@@ -53,8 +53,8 @@ body:not(.wp-admin) header.has-transparent-header {
    is the default, so it is already correct in the first paint – no script
    involved. The solid state needs no rule at all: once this stops matching, the
    block's own editor-set background simply reappears. That is why this file
-   ships no colours. `!important` is unavoidable – core emits the block's preset
-   background as:
+   ships no styling of its own. `!important` is unavoidable – core emits the
+   block's preset background as:
    `.has-<slug>-background-color { background-color: … !important }`.
 
    An open disclosure inside the header (a mega menu, a mobile menu) drops the

@@ -266,7 +266,7 @@ kntnt-transparent-header-ollie-pro.php   Plugin header, PHP guard, bootstrap
 autoloader.php                           PSR-4 → classes/
 classes/Plugin.php                       Singleton; theme check and asset wiring
 classes/Updater.php                      Self-update from GitHub releases
-css/header.css                           The three rules. Ships no colours
+css/header.css                           The four rules. Ships no styling
 js/header.js                             Toggles is-scrolled
 languages/                               Translation template
 agents.d/coding-standard/                The coding standard, by language

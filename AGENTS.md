@@ -5,7 +5,7 @@
 Precedence over any conflicting skill, README or other doc unless the user overrides in the moment.
 
 - Authoritative: only this file, the files it references and the actual code/state. Ignore `README*` and other narrative docs unless referenced here.
-- Ships mechanism, never colour. Solid state = the background the user set on the header group in the Site Editor. A rule hard-coding a colour is a bug.
+- Ships mechanism, never style. The look — colour, opacity, shadow, spacing, type — stays with the user in the Site Editor; the solid state is just the background they set on the header group. A rule that hard-codes any of it is a bug.
 
 ## Non-obvious
 
